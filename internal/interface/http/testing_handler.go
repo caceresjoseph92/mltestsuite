@@ -403,7 +403,7 @@ func (h *TestingHandler) UpdateTestCase(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	setFlash(w, "success", "Caso de prueba actualizado")
-	http.Redirect(w, r, "/testcases", http.StatusSeeOther)
+	http.Redirect(w, r, fmt.Sprintf("/testcases/%s", id), http.StatusSeeOther)
 }
 
 func (h *TestingHandler) DeleteTestCase(w http.ResponseWriter, r *http.Request) {

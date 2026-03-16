@@ -37,7 +37,7 @@ const (
 func (s ExecutionStatus) Label() string {
 	switch s {
 	case StatusPass:
-		return "Paso"
+		return "Exitoso"
 	case StatusFail:
 		return "Fallo"
 	case StatusBlocked:

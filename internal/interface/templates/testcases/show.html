@@ -1,4 +1,10 @@
 {{define "content"}}
+
+{{/* ═══════════════════════════════════════════════════════════════
+     SECCIÓN: VER CASO DE PRUEBA  (/testcases/{id})
+     Muestra detalles, imagen e campos JSON en modo lectura.
+     El formulario de subir imagen y agregar campos está en /edit.
+════════════════════════════════════════════════════════════════ */}}
 {{if .TestCase}}
 <div style="margin-bottom:16px;">
     <a href="/testcases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Casos de Prueba</a>
@@ -21,11 +27,16 @@
             {{end}}
         </div>
     </div>
-    <a href="/testcases/{{.TestCase.ID}}/edit" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none;">Editar</a>
+    <a href="/testcases/{{.TestCase.ID}}/edit"
+        style="display:inline-flex; align-items:center; gap:6px; background:white; border:1.5px solid #009EE3; color:#009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:700; text-decoration:none;"
+        onmouseover="this.style.background='#F0F9FF'" onmouseout="this.style.background='white'">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+        Editar
+    </a>
 </div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
-    <!-- Details card -->
+    <!-- Detalles -->
     <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
         <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Detalles</h2>
         <div style="margin-bottom:16px;">
@@ -44,150 +55,153 @@
             <div style="font-size:12px; font-weight:800; color:#1C1C1E; text-transform:uppercase; letter-spacing:0.06em; margin-bottom:6px;">Creado por</div>
             <p style="font-size:14px; color:#374151; margin:0;">{{.TestCase.CreatedByName}}</p>
         </div>
-        {{if .TestCase.ReferenceImageURL}}
-        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
-            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Imagen de Referencia</div>
-            <img src="{{.TestCase.ReferenceImageURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB;">
-        </div>
-        {{end}}
     </div>
 
     <div style="display:flex; flex-direction:column; gap:24px;">
-        <!-- Upload image card -->
+        <!-- Imagen de referencia (solo lectura) -->
         <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Subir Imagen de Referencia</h2>
-            <form method="POST" action="/testcases/{{.TestCase.ID}}/image" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" style="margin-bottom:12px; font-size:13px;">
-                <div>
-                    <button type="submit" style="background:#009EE3; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
-                        onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
-                        Subir
-                    </button>
-                </div>
-            </form>
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Imagen de Referencia</h2>
+            {{if .TestCase.ReferenceImageURL}}
+            <img src="{{.TestCase.ReferenceImageURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB;">
+            {{else}}
+            <p style="font-size:13px; color:#9CA3AF; margin:0;">Sin imagen. Podés subirla desde <a href="/testcases/{{.TestCase.ID}}/edit" style="color:#009EE3; font-weight:600;">Editar</a>.</p>
+            {{end}}
         </div>
 
-        <!-- JSON Fields card -->
+        <!-- Campos JSON (solo lectura) -->
         <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
             <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Campos JSON</h2>
             {{range .TestCase.Fields}}
             <div style="margin-bottom:12px; padding:12px; background:#F9FAFB; border-radius:8px; border:1px solid #F3F4F6;">
-                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-                    <strong style="font-size:13px; color:#1C1C1E;">{{.FieldName}}</strong>
-                    <button hx-delete="/testcases/fields/{{.ID}}" hx-confirm="Eliminar?" hx-target="closest div" hx-swap="outerHTML"
-                        style="background:none; border:none; color:#F23D4F; font-size:12px; font-weight:600; cursor:pointer;">Eliminar</button>
-                </div>
+                <p style="font-size:12px; font-weight:800; color:#1C1C1E; margin:0 0 6px; font-family:monospace;">{{.FieldName}}</p>
                 <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace;">{{.ExpectedJSON}}</pre>
             </div>
+            {{else}}
+            <p style="font-size:13px; color:#9CA3AF; margin:0;">Sin campos JSON. Podés agregarlos desde <a href="/testcases/{{.TestCase.ID}}/edit" style="color:#009EE3; font-weight:600;">Editar</a>.</p>
             {{end}}
-            <form method="POST" action="/testcases/{{.TestCase.ID}}/fields" style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
-                <input type="text" name="field_name" placeholder="Nombre del campo" required
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; margin-bottom:8px;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-                <textarea name="expected_json" placeholder='{"key": "value"}' rows="4" required
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace; margin-bottom:8px;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
-                <button type="submit" style="background:#00A650; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
-                    onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#00A650'">
-                    Agregar Campo
-                </button>
-            </form>
         </div>
     </div>
 </div>
 {{end}}
 
+{{/* ═══════════════════════════════════════════════════════════════
+     SECCIÓN: EJECUCIÓN  (/executions/{id})
+     Muestra estado actual, comparación JSON campo a campo.
+════════════════════════════════════════════════════════════════ */}}
 {{if .Execution}}
-<div style="margin-bottom:16px;">
+<!-- Breadcrumb al tope -->
+<div style="margin-bottom:20px;">
     <a href="/releases/{{.Execution.ReleaseID}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver al Release</a>
 </div>
 
-<!-- Execution Header -->
+<!-- Header único -->
 <div style="margin-bottom:24px;">
-    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 6px;">Ejecucion: {{.Execution.TestCaseTitle}}</h1>
-    <div style="display:flex; align-items:center; gap:10px;">
+    <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
         <span style="font-size:13px; color:#009EE3; font-weight:600;">{{.Execution.TeamName}}</span>
         <span style="color:#D1D5DB;">/</span>
         <span style="font-size:13px; color:#6B7280;">{{.Execution.ReportName}}</span>
     </div>
+    <h1 style="font-size:20px; font-weight:800; color:#1C1C1E; margin:0;">{{.Execution.TestCaseTitle}}</h1>
 </div>
 
-<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
-    <!-- Status update card -->
+<div style="display:grid; grid-template-columns:300px 1fr; gap:24px; align-items:start;">
+
+    <!-- Panel izquierdo: actualizar estado -->
     <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Actualizar Estado</h2>
-        <form method="POST" action="/executions/{{.Execution.ID}}/status" enctype="multipart/form-data">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Estado</h2>
+
+        <!-- Badge estado actual -->
+        <div style="margin-bottom:20px; text-align:center; padding:16px; background:#F9FAFB; border-radius:10px; border:1px solid #F3F4F6;">
+            <p style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 8px;">Estado actual</p>
+            <span style="font-size:16px; font-weight:800; color:{{statusColor .Execution.Status}}; padding:6px 20px; border-radius:20px; background:white; border:2px solid {{statusColor .Execution.Status}};">
+                {{statusLabel .Execution.Status}}
+            </span>
+        </div>
+
+        <form method="POST" action="/executions/{{.Execution.ID}}/status">
             <input type="hidden" name="_method" value="PATCH">
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Estado</label>
-                <select name="status"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Cambiar estado</label>
+                <select name="status" id="exec-status-select"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; background:white; box-sizing:border-box;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
                     {{range .Statuses}}<option value="{{.}}" {{if eq (printf "%s" .) (printf "%s" $.Execution.Status)}}selected{{end}}>{{statusLabel .}}</option>{{end}}
                 </select>
             </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Notas</label>
+            <div style="margin-bottom:16px;">
+                <label style="display:block; font-size:12px; font-weight:700; color:#374151; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.04em;">Notas</label>
                 <textarea name="notes" rows="3"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; box-sizing:border-box; resize:vertical;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.Execution.Notes}}</textarea>
             </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Screenshot <span style="font-weight:400; color:#9CA3AF;">(opcional)</span></label>
-                <input type="file" name="screenshot" accept="image/*" style="font-size:13px;">
-            </div>
-            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+            <button type="submit" style="width:100%; background:#009EE3; color:white; border:none; padding:10px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer;"
                 onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
-                Guardar
+                Guardar estado
             </button>
         </form>
-        {{if .Execution.ScreenshotURL}}
-        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
-            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Screenshot actual</div>
-            <img src="{{.Execution.ScreenshotURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB;">
-        </div>
-        {{end}}
     </div>
 
-    <!-- JSON Comparison card -->
-    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Comparacion JSON</h2>
+    <!-- Panel derecho: comparación JSON campo a campo -->
+    <div style="display:flex; flex-direction:column; gap:16px;">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0;">Comparación JSON</h2>
+
+        {{if .Execution.Fields}}
         {{range .Execution.Fields}}
-        <div style="margin-bottom:12px; padding:12px; background:#F9FAFB; border-radius:8px; border:1px solid #F3F4F6;">
-            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-                <strong style="font-size:13px; color:#1C1C1E;">{{.FieldName}}</strong>
+        <div id="field-{{.FieldName}}" style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:20px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <!-- Campo header -->
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:14px;">
+                <code style="font-size:13px; font-weight:700; color:#1C1C1E; background:#F3F4F6; padding:3px 8px; border-radius:6px;">{{.FieldName}}</code>
                 {{if .Matches}}
                     {{if derefBool .Matches}}
-                    <span style="background:#D1FAE5; color:#065F46; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700;">MATCH</span>
+                    <span id="badge-{{.FieldName}}" style="background:#D1FAE5; color:#065F46; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:800;">✓ EXITOSO</span>
+                    <button onclick="document.getElementById('exec-status-select').value='pass'; document.getElementById('exec-status-select').style.borderColor='#00A650';"
+                        style="background:#D1FAE5; border:1px solid #6EE7B7; color:#065F46; padding:3px 10px; border-radius:6px; font-size:11px; font-weight:700; cursor:pointer;">
+                        → Marcar como Exitoso
+                    </button>
                     {{else}}
-                    <span style="background:#FEE2E2; color:#991B1B; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700;">NO MATCH</span>
+                    <span id="badge-{{.FieldName}}" style="background:#FEE2E2; color:#991B1B; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:800;">✗ NO COINCIDE</span>
                     {{end}}
                 {{end}}
             </div>
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-                <div>
-                    <p style="font-size:11px; font-weight:700; color:#6B7280; margin:0 0 4px;">Esperado:</p>
-                    <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace; background:white; padding:8px; border-radius:6px; border:1px solid #E5E7EB;">{{.ExpectedJSON}}</pre>
+
+            <!-- Comparación lado a lado -->
+            <form hx-post="/executions/{{$.Execution.ID}}/compare"
+                  hx-target="#field-{{.FieldName}}"
+                  hx-swap="outerHTML">
+                <input type="hidden" name="field_name" value="{{.FieldName}}">
+                <div style="display:grid; grid-template-columns:1fr 90px 1fr; gap:12px; align-items:start;">
+                    <!-- Esperado -->
+                    <div>
+                        <p style="font-size:11px; font-weight:800; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 6px;">Esperado (caso de prueba)</p>
+                        <pre style="font-size:11px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace; background:#F9FAFB; padding:10px; border-radius:8px; border:1px solid #E5E7EB; min-height:80px; white-space:pre-wrap; word-break:break-all;">{{.ExpectedJSON}}</pre>
+                    </div>
+                    <!-- Botón comparar centrado -->
+                    <div style="display:flex; flex-direction:column; align-items:center; justify-content:center; padding-top:22px; gap:6px;">
+                        <svg width="20" height="20" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24"><path d="M8 7h12M8 12h12M8 17h12M4 7h.01M4 12h.01M4 17h.01"/></svg>
+                        <button type="submit"
+                            style="background:#1C1C1E; color:#FFE600; border:none; padding:8px 12px; border-radius:8px; font-size:11px; font-weight:800; cursor:pointer; text-align:center; line-height:1.3;"
+                            onmouseover="this.style.background='#374151'" onmouseout="this.style.background='#1C1C1E'">
+                            Comparar
+                        </button>
+                    </div>
+                    <!-- Actual -->
+                    <div>
+                        <p style="font-size:11px; font-weight:800; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin:0 0 6px;">Tu respuesta actual</p>
+                        <textarea name="actual_json" rows="5" required
+                            placeholder='{"key": "value"}'
+                            style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px; font-size:11px; outline:none; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace;"
+                            onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.ActualJSON}}</textarea>
+                    </div>
                 </div>
-                <div>
-                    <p style="font-size:11px; font-weight:700; color:#6B7280; margin:0 0 4px;">Actual:</p>
-                    <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace; background:white; padding:8px; border-radius:6px; border:1px solid #E5E7EB;">{{.ActualJSON}}</pre>
-                </div>
-            </div>
+            </form>
         </div>
         {{end}}
-        <form method="POST" action="/executions/{{.Execution.ID}}/compare" style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
-            <input type="text" name="field_name" placeholder="Nombre del campo" required
-                style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; margin-bottom:8px;"
-                onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-            <textarea name="actual_json" placeholder='{"key": "value"}' rows="4" required
-                style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace; margin-bottom:8px;"
-                onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
-            <button type="submit" style="background:#00A650; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
-                onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#00A650'">
-                Comparar
-            </button>
-        </form>
+        {{else}}
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:32px; text-align:center; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <p style="font-size:14px; color:#6B7280; margin:0;">Este caso no tiene campos JSON definidos.</p>
+            <p style="font-size:13px; color:#9CA3AF; margin:8px 0 0;">Podés agregarlos desde la edición del caso de prueba.</p>
+        </div>
+        {{end}}
     </div>
 </div>
 {{end}}
