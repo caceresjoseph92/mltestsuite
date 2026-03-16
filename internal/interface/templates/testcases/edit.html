@@ -14,7 +14,7 @@
                 <select name="report_id" required
                     style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-                    {{range .Reports}}<option value="{{.ID}}" {{if eq .ID $.TestCase.ReportID}}selected{{end}}>{{.TeamName}} / {{.Name}}</option>{{end}}
+                    {{range .Reports}}<option value="{{.ID}}" {{if eq (printf "%s" .ID) (printf "%s" $.TestCase.ReportID)}}selected{{end}}>{{.TeamName}} / {{.Name}}</option>{{end}}
                 </select>
             </div>
             <div style="margin-bottom:20px;">
