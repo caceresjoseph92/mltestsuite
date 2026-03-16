@@ -1,0 +1,36 @@
+{{define "content"}}
+<h1 class="text-2xl font-bold mb-6">Base de Conocimiento</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="font-bold mb-4">Editar Documento</h2>
+        <form method="POST" action="/knowledge">
+            {{if .Document}}<input type="hidden" name="id" value="{{.Document.ID}}">{{end}}
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Título</label>
+                <input type="text" name="title" value="{{if .Document}}{{.Document.Title}}{{end}}" class="w-full border rounded p-2" required>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Tipo de Reporte</label>
+                <input type="text" name="report_type" value="{{if .Document}}{{.Document.ReportType}}{{end}}" class="w-full border rounded p-2">
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Contenido (Markdown)</label>
+                <textarea name="content" class="w-full border rounded p-2 font-mono text-sm" rows="20">{{if .Document}}{{.Document.Content}}{{end}}</textarea>
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+        </form>
+    </div>
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="font-bold mb-4">Documentos</h2>
+        {{range .Documents}}
+        <div class="mb-3 p-3 bg-gray-50 rounded">
+            <strong>{{.Title}}</strong>
+            <span class="text-xs text-gray-500 ml-2">{{.ReportType}}</span>
+            <p class="text-sm text-gray-600 mt-1">Actualizado: {{.UpdatedAt.Format "2006-01-02 15:04"}}</p>
+        </div>
+        {{else}}
+        <p class="text-gray-500">No hay documentos aún</p>
+        {{end}}
+    </div>
+</div>
+{{end}}

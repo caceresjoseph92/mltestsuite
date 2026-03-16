@@ -1,0 +1,94 @@
+{{define "content"}}
+{{if .TestCase}}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">{{.TestCase.Title}}</h1>
+    <p class="text-gray-600">{{.TestCase.TeamName}} / {{.TestCase.ReportName}}</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="font-bold mb-2">Detalles</h2>
+        <p><strong>Prioridad:</strong> {{.TestCase.Priority}}</p>
+        <p><strong>Precondiciones:</strong> {{.TestCase.Preconditions}}</p>
+        <p><strong>Pasos:</strong> {{.TestCase.Steps}}</p>
+        <p><strong>Resultado Esperado:</strong> {{.TestCase.ExpectedResult}}</p>
+        <p><strong>Creado por:</strong> {{.TestCase.CreatedByName}}</p>
+        {{if .TestCase.ReferenceImageURL}}<img src="{{.TestCase.ReferenceImageURL}}" class="mt-4 max-w-full rounded">{{end}}
+    </div>
+    <div class="space-y-4">
+        <div class="bg-white rounded shadow p-6">
+            <h2 class="font-bold mb-2">Subir Imagen de Referencia</h2>
+            <form method="POST" action="/testcases/{{.TestCase.ID}}/image" enctype="multipart/form-data">
+                <input type="file" name="image" accept="image/*" class="mb-2">
+                <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Subir</button>
+            </form>
+        </div>
+        <div class="bg-white rounded shadow p-6">
+            <h2 class="font-bold mb-2">Campos JSON</h2>
+            {{range .TestCase.Fields}}
+            <div class="mb-3 p-3 bg-gray-50 rounded">
+                <div class="flex justify-between items-center">
+                    <strong>{{.FieldName}}</strong>
+                    <button hx-delete="/testcases/fields/{{.ID}}" hx-confirm="¿Eliminar?" hx-target="closest div" hx-swap="outerHTML" class="text-red-600 text-sm hover:underline">Eliminar</button>
+                </div>
+                <pre class="text-xs mt-1 overflow-x-auto">{{.ExpectedJSON}}</pre>
+            </div>
+            {{end}}
+            <form method="POST" action="/testcases/{{.TestCase.ID}}/fields" class="mt-4">
+                <input type="text" name="field_name" placeholder="Nombre del campo" class="w-full border rounded p-2 mb-2" required>
+                <textarea name="expected_json" placeholder='{"key": "value"}' class="w-full border rounded p-2 mb-2 font-mono text-sm" rows="4" required></textarea>
+                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Agregar Campo</button>
+            </form>
+        </div>
+    </div>
+</div>
+{{end}}
+
+{{if .Execution}}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold">Ejecución: {{.Execution.TestCaseTitle}}</h1>
+    <p class="text-gray-600">{{.Execution.TeamName}} / {{.Execution.ReportName}}</p>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="font-bold mb-4">Actualizar Estado</h2>
+        <form method="POST" action="/executions/{{.Execution.ID}}/status" enctype="multipart/form-data">
+            <input type="hidden" name="_method" value="PATCH">
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Estado</label>
+                <select name="status" class="w-full border rounded p-2">
+                    {{range .Statuses}}<option value="{{.}}" {{if eq (printf "%s" $) (printf "%s" $.Execution.Status)}}selected{{end}}>{{statusLabel .}}</option>{{end}}
+                </select>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Notas</label>
+                <textarea name="notes" class="w-full border rounded p-2" rows="3">{{.Execution.Notes}}</textarea>
+            </div>
+            <div class="mb-4">
+                <label class="block text-sm font-medium mb-1">Screenshot (opcional)</label>
+                <input type="file" name="screenshot" accept="image/*">
+            </div>
+            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+        </form>
+        {{if .Execution.ScreenshotURL}}<img src="{{.Execution.ScreenshotURL}}" class="mt-4 max-w-full rounded">{{end}}
+    </div>
+    <div class="bg-white rounded shadow p-6">
+        <h2 class="font-bold mb-4">Comparación JSON</h2>
+        {{range .Execution.Fields}}
+        <div class="mb-4 p-3 bg-gray-50 rounded">
+            <strong>{{.FieldName}}</strong>
+            {{if .Matches}}{{if derefBool .Matches}}<span class="text-green-600 ml-2">MATCH</span>{{else}}<span class="text-red-600 ml-2">NO MATCH</span>{{end}}{{end}}
+            <div class="grid grid-cols-2 gap-2 mt-2 text-xs font-mono">
+                <div><p class="font-bold text-gray-600">Esperado:</p><pre class="overflow-x-auto">{{.ExpectedJSON}}</pre></div>
+                <div><p class="font-bold text-gray-600">Actual:</p><pre class="overflow-x-auto">{{.ActualJSON}}</pre></div>
+            </div>
+        </div>
+        {{end}}
+        <form method="POST" action="/executions/{{.Execution.ID}}/compare" class="mt-4">
+            <input type="text" name="field_name" placeholder="Nombre del campo" class="w-full border rounded p-2 mb-2" required>
+            <textarea name="actual_json" placeholder='{"key": "value"}' class="w-full border rounded p-2 mb-2 font-mono text-sm" rows="4" required></textarea>
+            <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Comparar</button>
+        </form>
+    </div>
+</div>
+{{end}}
+{{end}}

@@ -1,0 +1,36 @@
+{{define "content"}}
+<h1 class="text-2xl font-bold mb-6">{{if .IsNew}}Nuevo Usuario{{else}}Editar Usuario{{end}}</h1>
+<div class="bg-white rounded shadow p-6 max-w-lg">
+    <form method="POST" action="{{if .IsNew}}/admin/users{{else}}/admin/users/{{.User.ID}}{{end}}">
+        {{if not .IsNew}}<input type="hidden" name="_method" value="PUT">{{end}}
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Nombre</label>
+            <input type="text" name="name" value="{{if .User}}{{.User.Name}}{{end}}" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Email</label>
+            <input type="email" name="email" value="{{if .User}}{{.User.Email}}{{end}}" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Contraseña{{if not .IsNew}} (dejar vacío para no cambiar){{end}}</label>
+            <input type="password" name="password" class="w-full border rounded p-2" {{if .IsNew}}required{{end}}>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Rol</label>
+            <select name="role" class="w-full border rounded p-2">
+                <option value="user" {{if and .User (eq (printf "%s" .User.Role) "user")}}selected{{end}}>Usuario</option>
+                <option value="admin" {{if and .User (eq (printf "%s" .User.Role) "admin")}}selected{{end}}>Admin</option>
+            </select>
+        </div>
+        {{if not .IsNew}}
+        <div class="mb-4">
+            <label class="flex items-center gap-2">
+                <input type="checkbox" name="active" {{if .User.Active}}checked{{end}}>
+                <span class="text-sm">Activo</span>
+            </label>
+        </div>
+        {{end}}
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{{if .IsNew}}Crear{{else}}Guardar{{end}}</button>
+    </form>
+</div>
+{{end}}

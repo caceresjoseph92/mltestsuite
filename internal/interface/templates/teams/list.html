@@ -1,0 +1,24 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Equipos</h1>
+    <a href="/teams/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Equipo</a>
+</div>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100"><tr>
+            <th class="p-3 text-left">Nombre</th>
+            <th class="p-3 text-left">Descripción</th>
+        </tr></thead>
+        <tbody>
+        {{range .Teams}}
+        <tr class="border-t">
+            <td class="p-3 font-medium">{{.Name}}</td>
+            <td class="p-3">{{.Description}}</td>
+        </tr>
+        {{else}}
+        <tr><td colspan="2" class="p-6 text-center text-gray-500">No hay equipos aún</td></tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}

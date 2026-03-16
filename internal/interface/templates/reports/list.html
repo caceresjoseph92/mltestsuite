@@ -1,0 +1,33 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Reportes</h1>
+    <a href="/reports/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Reporte</a>
+</div>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100"><tr>
+            <th class="p-3 text-left">Equipo</th>
+            <th class="p-3 text-left">Nombre</th>
+            <th class="p-3 text-left">Tipo</th>
+            <th class="p-3 text-left">Descripción</th>
+            <th class="p-3 text-left">Acciones</th>
+        </tr></thead>
+        <tbody>
+        {{range .Reports}}
+        <tr class="border-t">
+            <td class="p-3">{{.TeamName}}</td>
+            <td class="p-3 font-medium">{{.Name}}</td>
+            <td class="p-3">{{.ReportType}}</td>
+            <td class="p-3">{{.Description}}</td>
+            <td class="p-3">
+                <a href="/reports/{{.ID}}/edit" class="text-blue-600 hover:underline">Editar</a> |
+                <a href="/reports/{{.ID}}/claude-prompt" class="text-purple-600 hover:underline">Prompt Claude</a>
+            </td>
+        </tr>
+        {{else}}
+        <tr><td colspan="5" class="p-6 text-center text-gray-500">No hay reportes aún</td></tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}

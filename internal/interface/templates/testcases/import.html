@@ -1,0 +1,19 @@
+{{define "content"}}
+<h1 class="text-2xl font-bold mb-6">Importar Casos desde Markdown</h1>
+<div class="bg-white rounded shadow p-6 max-w-2xl">
+    <form method="POST" action="/testcases/import">
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Reporte destino</label>
+            <select name="report_id" class="w-full border rounded p-2" required>
+                <option value="">Seleccionar...</option>
+                {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Contenido Markdown (formato Claude)</label>
+            <textarea name="markdown" class="w-full border rounded p-2 font-mono text-sm" rows="20" placeholder="Pegue aquí el markdown generado por Claude..." required></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Importar</button>
+    </form>
+</div>
+{{end}}

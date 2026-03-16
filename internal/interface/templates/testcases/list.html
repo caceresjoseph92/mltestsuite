@@ -1,0 +1,38 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Casos de Prueba</h1>
+    <div class="flex gap-2">
+        <a href="/testcases/import" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Importar</a>
+        <a href="/testcases/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Caso</a>
+    </div>
+</div>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100"><tr>
+            <th class="p-3 text-left">Equipo</th>
+            <th class="p-3 text-left">Reporte</th>
+            <th class="p-3 text-left">Título</th>
+            <th class="p-3 text-left">Prioridad</th>
+            <th class="p-3 text-left">Creado por</th>
+            <th class="p-3 text-left">Acciones</th>
+        </tr></thead>
+        <tbody>
+        {{range .TestCases}}
+        <tr class="border-t">
+            <td class="p-3">{{.TeamName}}</td>
+            <td class="p-3">{{.ReportName}}</td>
+            <td class="p-3"><a href="/testcases/{{.ID}}" class="text-blue-600 hover:underline">{{.Title}}</a></td>
+            <td class="p-3"><span class="px-2 py-1 rounded text-xs {{if eq (printf "%s" .Priority) "high"}}bg-red-100 text-red-800{{else if eq (printf "%s" .Priority) "medium"}}bg-yellow-100 text-yellow-800{{else}}bg-gray-100 text-gray-800{{end}}">{{.Priority}}</span></td>
+            <td class="p-3">{{.CreatedByName}}</td>
+            <td class="p-3">
+                <a href="/testcases/{{.ID}}/edit" class="text-blue-600 hover:underline">Editar</a>
+                <button hx-delete="/testcases/{{.ID}}" hx-confirm="¿Eliminar este caso?" hx-target="closest tr" hx-swap="outerHTML" class="text-red-600 hover:underline ml-2">Eliminar</button>
+            </td>
+        </tr>
+        {{else}}
+        <tr><td colspan="6" class="p-6 text-center text-gray-500">No hay casos de prueba aún</td></tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}

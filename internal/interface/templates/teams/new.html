@@ -1,0 +1,16 @@
+{{define "content"}}
+<h1 class="text-2xl font-bold mb-6">Nuevo Equipo</h1>
+<div class="bg-white rounded shadow p-6 max-w-lg">
+    <form method="POST" action="/teams">
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Nombre</label>
+            <input type="text" name="name" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Descripción</label>
+            <textarea name="description" class="w-full border rounded p-2" rows="3"></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Crear Equipo</button>
+    </form>
+</div>
+{{end}}

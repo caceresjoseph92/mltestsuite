@@ -1,0 +1,31 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Usuarios</h1>
+    <a href="/admin/users/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Usuario</a>
+</div>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100"><tr>
+            <th class="p-3 text-left">Nombre</th>
+            <th class="p-3 text-left">Email</th>
+            <th class="p-3 text-left">Rol</th>
+            <th class="p-3 text-left">Activo</th>
+            <th class="p-3 text-left">Acciones</th>
+        </tr></thead>
+        <tbody>
+        {{range .Users}}
+        <tr class="border-t">
+            <td class="p-3">{{.Name}}</td>
+            <td class="p-3">{{.Email}}</td>
+            <td class="p-3">{{.Role}}</td>
+            <td class="p-3">{{if .Active}}Si{{else}}No{{end}}</td>
+            <td class="p-3">
+                <a href="/admin/users/{{.ID}}/edit" class="text-blue-600 hover:underline">Editar</a>
+                <button hx-delete="/admin/users/{{.ID}}" hx-confirm="¿Eliminar este usuario?" hx-target="closest tr" hx-swap="outerHTML" class="text-red-600 hover:underline ml-2">Eliminar</button>
+            </td>
+        </tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}

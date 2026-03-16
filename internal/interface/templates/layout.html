@@ -1,0 +1,37 @@
+{{define "layout.html"}}<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MLTestSuite</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <nav class="bg-blue-700 text-white p-4">
+        <div class="max-w-7xl mx-auto flex items-center justify-between">
+            <a href="/" class="text-xl font-bold">MLTestSuite</a>
+            <div class="flex items-center gap-4">
+                <a href="/releases" class="hover:underline">Releases</a>
+                <a href="/testcases" class="hover:underline">Casos</a>
+                <a href="/reports" class="hover:underline">Reportes</a>
+                <a href="/teams" class="hover:underline">Equipos</a>
+                <a href="/knowledge" class="hover:underline">Conocimiento</a>
+                {{if .IsAdmin}}<a href="/admin/users" class="hover:underline">Usuarios</a>{{end}}
+                <span class="text-sm">{{.UserName}}</span>
+                <form method="POST" action="/logout" class="inline">
+                    <button type="submit" class="hover:underline text-sm">Salir</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+    <main class="max-w-7xl mx-auto p-6">
+        {{if .Flash}}
+        <div class="mb-4 p-3 rounded {{if eq .FlashKind "error"}}bg-red-100 text-red-800{{else}}bg-green-100 text-green-800{{end}}">
+            {{.Flash}}
+        </div>
+        {{end}}
+        {{template "content" .}}
+    </main>
+</body>
+</html>{{end}}

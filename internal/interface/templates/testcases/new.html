@@ -1,0 +1,37 @@
+{{define "content"}}
+<h1 class="text-2xl font-bold mb-6">Nuevo Caso de Prueba</h1>
+<div class="bg-white rounded shadow p-6 max-w-2xl">
+    <form method="POST" action="/testcases">
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Reporte</label>
+            <select name="report_id" class="w-full border rounded p-2" required>
+                <option value="">Seleccionar...</option>
+                {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Título</label>
+            <input type="text" name="title" class="w-full border rounded p-2" required>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Prioridad</label>
+            <select name="priority" class="w-full border rounded p-2">
+                {{range .Priorities}}<option value="{{.}}">{{.}}</option>{{end}}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Precondiciones</label>
+            <textarea name="preconditions" class="w-full border rounded p-2" rows="3"></textarea>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Pasos</label>
+            <textarea name="steps" class="w-full border rounded p-2" rows="5"></textarea>
+        </div>
+        <div class="mb-4">
+            <label class="block text-sm font-medium mb-1">Resultado Esperado</label>
+            <textarea name="expected_result" class="w-full border rounded p-2" rows="3"></textarea>
+        </div>
+        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Crear Caso</button>
+    </form>
+</div>
+{{end}}

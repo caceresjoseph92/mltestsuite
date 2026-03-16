@@ -1,0 +1,32 @@
+{{define "content"}}
+<div class="flex justify-between items-center mb-6">
+    <h1 class="text-2xl font-bold">Releases</h1>
+    <a href="/releases/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Release</a>
+</div>
+<div class="bg-white rounded shadow overflow-hidden">
+    <table class="w-full">
+        <thead class="bg-gray-100"><tr>
+            <th class="p-3 text-left">Versión</th>
+            <th class="p-3 text-left">Descripción</th>
+            <th class="p-3 text-left">Estado</th>
+            <th class="p-3 text-left">Progreso</th>
+            <th class="p-3 text-left">Creado por</th>
+            <th class="p-3 text-left">Acciones</th>
+        </tr></thead>
+        <tbody>
+        {{range .Releases}}
+        <tr class="border-t">
+            <td class="p-3 font-medium">{{.Version}}</td>
+            <td class="p-3">{{.Description}}</td>
+            <td class="p-3">{{if .IsComplete}}<span class="text-green-600 font-medium">Completado</span>{{else}}<span class="text-yellow-600">En progreso</span>{{end}}</td>
+            <td class="p-3">{{.PassedCases}}/{{.TotalCases}} ({{.PercentComplete}}%)</td>
+            <td class="p-3">{{.CreatedByName}}</td>
+            <td class="p-3"><a href="/releases/{{.ID}}" class="text-blue-600 hover:underline">Ver</a> | <a href="/releases/{{.ID}}/export" class="text-green-600 hover:underline">Excel</a></td>
+        </tr>
+        {{else}}
+        <tr><td colspan="6" class="p-6 text-center text-gray-500">No hay releases aún</td></tr>
+        {{end}}
+        </tbody>
+    </table>
+</div>
+{{end}}

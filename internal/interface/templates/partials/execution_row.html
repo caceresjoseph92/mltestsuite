@@ -1,0 +1,10 @@
+{{define "partials/execution_row.html"}}
+<div class="p-3 bg-gray-50 rounded mb-2">
+    <strong>{{.Field.FieldName}}</strong>
+    {{if .Field.Matches}}{{if derefBool .Field.Matches}}<span class="text-green-600 ml-2 font-bold">MATCH</span>{{else}}<span class="text-red-600 ml-2 font-bold">NO MATCH</span>{{end}}{{end}}
+    <div class="grid grid-cols-2 gap-2 mt-2 text-xs font-mono">
+        <div><p class="font-bold text-gray-600">Esperado:</p><pre class="overflow-x-auto">{{.Field.ExpectedJSON}}</pre></div>
+        <div><p class="font-bold text-gray-600">Actual:</p><pre class="overflow-x-auto">{{.Field.ActualJSON}}</pre></div>
+    </div>
+</div>
+{{end}}
