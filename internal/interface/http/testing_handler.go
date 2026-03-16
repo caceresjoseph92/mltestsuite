@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strings"
 	"time"
 
 	apptesting "mltestsuite/internal/application/testing"
@@ -217,14 +218,90 @@ func (h *TestingHandler) UpdateReport(w http.ResponseWriter, r *http.Request) {
 
 // -- TestCases ---------------------------------------------------------------
 
+type reportSummaryVM struct {
+	ReportID   uuid.UUID
+	ReportName string
+	ReportType string
+	TeamName   string
+	CaseCount  int
+	Creators   string
+}
+
 func (h *TestingHandler) ListTestCases(w http.ResponseWriter, r *http.Request) {
 	tcs, err := h.service.ListTestCases(r.Context())
 	if err != nil {
 		http.Error(w, "Error interno", http.StatusInternalServerError)
 		return
 	}
+
+	// Group by report
+	orderMap := []uuid.UUID{}
+	byReport := map[uuid.UUID]*reportSummaryVM{}
+	creatorsByReport := map[uuid.UUID]map[string]struct{}{}
+	for _, tc := range tcs {
+		if _, ok := byReport[tc.ReportID]; !ok {
+			orderMap = append(orderMap, tc.ReportID)
+			byReport[tc.ReportID] = &reportSummaryVM{
+				ReportID:   tc.ReportID,
+				ReportName: tc.ReportName,
+				ReportType: tc.ReportType,
+				TeamName:   tc.TeamName,
+			}
+			creatorsByReport[tc.ReportID] = map[string]struct{}{}
+		}
+		byReport[tc.ReportID].CaseCount++
+		if tc.CreatedByName != "" {
+			creatorsByReport[tc.ReportID][tc.CreatedByName] = struct{}{}
+		}
+	}
+
+	summaries := make([]reportSummaryVM, 0, len(orderMap))
+	for _, id := range orderMap {
+		vm := byReport[id]
+		names := make([]string, 0, len(creatorsByReport[id]))
+		for n := range creatorsByReport[id] {
+			names = append(names, n)
+		}
+		vm.Creators = strings.Join(names, ", ")
+		summaries = append(summaries, *vm)
+	}
+
 	h.renderer.ExecuteTemplate(w, "testcases/list.html", withFlash(w, r, map[string]any{
-		"TestCases": tcs,
+		"Reports": summaries,
+	}))
+}
+
+func (h *TestingHandler) ListTestCasesByReport(w http.ResponseWriter, r *http.Request) {
+	reportID, ok := parseUUID(w, r, "reportID")
+	if !ok {
+		return
+	}
+	tcs, err := h.service.ListTestCasesByReport(r.Context(), reportID)
+	if err != nil {
+		http.Error(w, "Error interno", http.StatusInternalServerError)
+		return
+	}
+
+	// Infer report meta from first case (or empty)
+	var reportName, reportType, teamName string
+	if len(tcs) > 0 {
+		reportName = tcs[0].ReportName
+		reportType = tcs[0].ReportType
+		teamName = tcs[0].TeamName
+	} else {
+		// Fallback: fetch report directly
+		rep, err := h.service.GetReport(r.Context(), reportID)
+		if err == nil {
+			reportName = rep.Name
+			reportType = rep.ReportType
+		}
+	}
+
+	h.renderer.ExecuteTemplate(w, "testcases/by_report.html", withFlash(w, r, map[string]any{
+		"TestCases":  tcs,
+		"ReportName": reportName,
+		"ReportType": reportType,
+		"TeamName":   teamName,
 	}))
 }
 

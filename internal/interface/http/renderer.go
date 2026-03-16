@@ -60,6 +60,7 @@ func NewRenderer() (*Renderer, error) {
 		"releases/new.html",
 		"releases/show.html",
 		"testcases/list.html",
+		"testcases/by_report.html",
 		"testcases/new.html",
 		"testcases/show.html",
 		"testcases/edit.html",
