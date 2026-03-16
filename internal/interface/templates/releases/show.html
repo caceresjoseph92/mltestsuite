@@ -1,35 +1,105 @@
 {{define "content"}}
-<div class="flex justify-between items-center mb-6">
-    <div>
-        <h1 class="text-2xl font-bold">Release {{.Release.Version}}</h1>
-        <p class="text-gray-600">{{.Release.Description}}</p>
-        {{if .Release.PRLink}}<a href="{{.Release.PRLink}}" target="_blank" class="text-blue-600 hover:underline text-sm">Ver PR</a>{{end}}
+<!-- Header -->
+<div style="margin-bottom:16px;">
+    <a href="/releases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Releases</a>
+</div>
+
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; margin-bottom:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start;">
+        <div>
+            <div style="display:flex; align-items:center; gap:10px; margin-bottom:6px;">
+                <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Release {{.Release.Version}}</h1>
+                {{if .Release.IsComplete}}
+                <span style="background:#D1FAE5; color:#065F46; padding:3px 12px; border-radius:20px; font-size:13px; font-weight:700;">100% Completado</span>
+                {{end}}
+            </div>
+            {{if .Release.Description}}<p style="color:#6B7280; font-size:14px; margin:0 0 8px;">{{.Release.Description}}</p>{{end}}
+            {{if .Release.PRLink}}<a href="{{.Release.PRLink}}" target="_blank" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">Ver PR</a>{{end}}
+        </div>
+        <a href="/releases/{{.Release.ID}}/export" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+            Exportar Excel
+        </a>
     </div>
-    <div class="text-right">
-        <div class="text-lg font-medium">{{.Release.PassedCases}}/{{.Release.TotalCases}} ({{.Release.PercentComplete}}%)</div>
-        <a href="/releases/{{.Release.ID}}/export" class="text-green-600 hover:underline text-sm">Exportar Excel</a>
+
+    <!-- Stats bar -->
+    <div style="display:flex; gap:24px; margin-top:20px; padding-top:20px; border-top:1px solid #F3F4F6;">
+        <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:800; color:#1C1C1E;">{{.Release.TotalCases}}</div>
+            <div style="font-size:12px; color:#9CA3AF; font-weight:500;">Total</div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:800; color:#065F46;">{{.Release.PassedCases}}</div>
+            <div style="font-size:12px; color:#9CA3AF; font-weight:500;">Pasaron</div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:800; color:#991B1B;">{{.Release.FailedCases}}</div>
+            <div style="font-size:12px; color:#9CA3AF; font-weight:500;">Fallaron</div>
+        </div>
+        <div style="text-align:center;">
+            <div style="font-size:28px; font-weight:800; color:#6B7280;">{{.Release.PendingCases}}</div>
+            <div style="font-size:12px; color:#9CA3AF; font-weight:500;">Pendientes</div>
+        </div>
+        <div style="flex:1; display:flex; align-items:center; padding-left:16px;">
+            <div style="width:100%;">
+                <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                    <span style="font-size:12px; color:#6B7280;">Progreso</span>
+                    <span style="font-size:13px; font-weight:700; color:{{if .Release.IsComplete}}#065F46{{else}}#009EE3{{end}};">{{.Release.PercentComplete}}%</span>
+                </div>
+                <div style="height:8px; background:#E5E7EB; border-radius:4px; overflow:hidden;">
+                    <div style="height:100%; width:{{.Release.PercentComplete}}%; background:{{if .Release.IsComplete}}#00A650{{else}}#009EE3{{end}}; border-radius:4px; transition:width 0.5s;"></div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-<div class="bg-white rounded shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-100"><tr>
-            <th class="p-3 text-left">Equipo</th>
-            <th class="p-3 text-left">Reporte</th>
-            <th class="p-3 text-left">Caso de Prueba</th>
-            <th class="p-3 text-left">Estado</th>
-            <th class="p-3 text-left">Ejecutado por</th>
-            <th class="p-3 text-left">Acciones</th>
-        </tr></thead>
+
+<!-- Executions -->
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+    <div style="padding:16px 24px; border-bottom:1px solid #F3F4F6; background:#FAFAFA;">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0;">Casos de prueba</h2>
+    </div>
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#F9FAFB;">
+                <th style="text-align:left; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Equipo / Reporte</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Caso de prueba</th>
+                <th style="text-align:center; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Estado</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Ejecutado por</th>
+                <th style="text-align:right; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Accion</th>
+            </tr>
+        </thead>
         <tbody>
         {{range .Executions}}
-        <tr class="border-t">
-            <td class="p-3">{{.TeamName}}</td>
-            <td class="p-3">{{.ReportName}}</td>
-            <td class="p-3">{{.TestCaseTitle}}</td>
-            <td class="p-3"><span class="px-2 py-1 rounded text-sm bg-{{statusColor .Status}}-100 text-{{statusColor .Status}}-800">{{statusLabel .Status}}</span></td>
-            <td class="p-3">{{.ExecutedByName}}</td>
-            <td class="p-3"><a href="/executions/{{.ID}}" class="text-blue-600 hover:underline">Ejecutar</a></td>
+        <tr id="exec-{{.ID}}" style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
+            onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
+            <td style="padding:14px 24px;">
+                <div style="font-size:12px; font-weight:700; color:#009EE3;">{{.TeamName}}</div>
+                <div style="font-size:12px; color:#9CA3AF;">{{.ReportName}}</div>
+            </td>
+            <td style="padding:14px 16px;">
+                <a href="/executions/{{.ID}}" style="font-size:14px; font-weight:600; color:#1C1C1E; text-decoration:none;">{{.TestCaseTitle}}</a>
+            </td>
+            <td style="padding:14px 16px; text-align:center;">
+                {{if eq (printf "%s" .Status) "pass"}}
+                <span style="background:#D1FAE5; color:#065F46; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">Paso</span>
+                {{else if eq (printf "%s" .Status) "fail"}}
+                <span style="background:#FEE2E2; color:#991B1B; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">Fallo</span>
+                {{else if eq (printf "%s" .Status) "blocked"}}
+                <span style="background:#FEF3C7; color:#92400E; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">Bloqueado</span>
+                {{else if eq (printf "%s" .Status) "skipped"}}
+                <span style="background:#F3F4F6; color:#6B7280; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">Omitido</span>
+                {{else}}
+                <span style="background:#F3F4F6; color:#6B7280; padding:4px 12px; border-radius:20px; font-size:12px; font-weight:700;">Pendiente</span>
+                {{end}}
+            </td>
+            <td style="padding:14px 16px; font-size:13px; color:#6B7280;">{{if .ExecutedByName}}{{.ExecutedByName}}{{else}}&mdash;{{end}}</td>
+            <td style="padding:14px 24px; text-align:right;">
+                <a href="/executions/{{.ID}}" style="background:#009EE3; color:white; padding:6px 14px; border-radius:6px; font-size:12px; font-weight:600; text-decoration:none;">Ejecutar</a>
+            </td>
         </tr>
+        {{else}}
+        <tr><td colspan="5" style="padding:48px; text-align:center; color:#9CA3AF; font-size:14px;">No hay casos de prueba</td></tr>
         {{end}}
         </tbody>
     </table>

@@ -1,4 +1,5 @@
-{{define "layout.html"}}<!DOCTYPE html>
+{{define "layout.html"}}
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -6,32 +7,139 @@
     <title>MLTestSuite</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <style>
+        /* ML Custom styles */
+        .ml-yellow { background-color: #FFE600; }
+        .ml-blue { background-color: #009EE3; }
+        .btn-primary { background-color: #009EE3; color: white; padding: 8px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; transition: background 0.2s; }
+        .btn-primary:hover { background-color: #0077B6; }
+        .btn-secondary { background-color: white; color: #009EE3; border: 1.5px solid #009EE3; padding: 7px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; }
+        .btn-secondary:hover { background-color: #F0F9FF; }
+        .btn-danger { background-color: #F23D4F; color: white; padding: 8px 20px; border-radius: 6px; font-weight: 600; font-size: 14px; }
+        .btn-danger:hover { background-color: #DC2626; }
+        .card { background: white; border-radius: 12px; border: 1px solid #E5E7EB; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        .sidebar-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-radius: 8px; color: #D1D5DB; font-size: 14px; font-weight: 500; transition: all 0.15s; text-decoration: none; }
+        .sidebar-item:hover { background: rgba(255,255,255,0.1); color: white; }
+        .sidebar-item.active { background: #009EE3; color: white; }
+        .badge-pass { background: #D1FAE5; color: #065F46; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-fail { background: #FEE2E2; color: #991B1B; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-pending { background: #F3F4F6; color: #6B7280; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-blocked { background: #FEF3C7; color: #92400E; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-skipped { background: #F3F4F6; color: #6B7280; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-high { background: #FEE2E2; color: #991B1B; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-medium { background: #FEF3C7; color: #92400E; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .badge-low { background: #D1FAE5; color: #065F46; padding: 2px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .progress-bar { height: 6px; border-radius: 3px; background: #E5E7EB; overflow: hidden; }
+        .progress-fill { height: 100%; background: #009EE3; border-radius: 3px; transition: width 0.3s; }
+        .progress-fill.complete { background: #00A650; }
+        .ml-input { width: 100%; border: 1.5px solid #E5E7EB; border-radius: 8px; padding: 10px 14px; font-size: 14px; outline: none; transition: border 0.2s; box-sizing: border-box; }
+        .ml-input:focus { border-color: #009EE3; }
+        .ml-label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+        .ml-table { width: 100%; border-collapse: collapse; }
+        .ml-table thead { background: #F9FAFB; }
+        .ml-table th { text-align: left; padding: 10px 24px; font-size: 12px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: 0.05em; border-bottom: 1px solid #E5E7EB; }
+        .ml-table td { padding: 14px 24px; }
+        .ml-table tbody tr { border-bottom: 1px solid #F3F4F6; transition: background 0.15s; }
+        .ml-table tbody tr:hover { background: #FAFAFA; }
+    </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <nav class="bg-blue-700 text-white p-4">
-        <div class="max-w-7xl mx-auto flex items-center justify-between">
-            <a href="/" class="text-xl font-bold">MLTestSuite</a>
-            <div class="flex items-center gap-4">
-                <a href="/releases" class="hover:underline">Releases</a>
-                <a href="/testcases" class="hover:underline">Casos</a>
-                <a href="/reports" class="hover:underline">Reportes</a>
-                <a href="/teams" class="hover:underline">Equipos</a>
-                <a href="/knowledge" class="hover:underline">Conocimiento</a>
-                {{if .IsAdmin}}<a href="/admin/users" class="hover:underline">Usuarios</a>{{end}}
-                <span class="text-sm">{{.UserName}}</span>
-                <form method="POST" action="/logout" class="inline">
-                    <button type="submit" class="hover:underline text-sm">Salir</button>
-                </form>
+<body style="background:#F5F5F5; min-height:100vh; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;">
+
+    <!-- Top navbar -->
+    <div style="background:#FFE600; height:56px; display:flex; align-items:center; justify-content:space-between; padding:0 24px; position:fixed; top:0; left:0; right:0; z-index:50; box-shadow:0 1px 4px rgba(0,0,0,0.12);">
+        <div style="display:flex; align-items:center; gap:12px;">
+            <div style="background:#1C1C1E; width:36px; height:36px; border-radius:8px; display:flex; align-items:center; justify-content:center;">
+                <span style="color:#FFE600; font-weight:900; font-size:16px;">ML</span>
+            </div>
+            <div>
+                <span style="font-weight:800; font-size:16px; color:#1C1C1E;">MLTestSuite</span>
+                <span style="font-size:11px; color:#555; margin-left:8px; background:rgba(0,0,0,0.1); padding:2px 8px; border-radius:10px;">ADR &middot; Reports QA</span>
             </div>
         </div>
-    </nav>
-    <main class="max-w-7xl mx-auto p-6">
-        {{if .Flash}}
-        <div class="mb-4 p-3 rounded {{if eq .FlashKind "error"}}bg-red-100 text-red-800{{else}}bg-green-100 text-green-800{{end}}">
-            {{.Flash}}
+        <div style="display:flex; align-items:center; gap:16px;">
+            {{if .LoggedIn}}
+            <div style="display:flex; align-items:center; gap:8px;">
+                <div style="width:32px; height:32px; border-radius:50%; background:#1C1C1E; display:flex; align-items:center; justify-content:center;">
+                    <span style="color:#FFE600; font-weight:700; font-size:13px;">{{if .UserName}}{{slice .UserName 0 1}}{{end}}</span>
+                </div>
+                <span style="font-size:13px; font-weight:600; color:#1C1C1E;">{{.UserName}}</span>
+            </div>
+            <form method="POST" action="/logout" style="display:inline;">
+                <button type="submit" style="background:rgba(0,0,0,0.1); border:none; padding:6px 14px; border-radius:6px; font-size:13px; font-weight:600; color:#1C1C1E; cursor:pointer;">Salir</button>
+            </form>
+            {{end}}
+        </div>
+    </div>
+
+    <!-- Layout -->
+    <div style="display:flex; padding-top:56px; min-height:100vh;">
+
+        <!-- Sidebar -->
+        {{if .LoggedIn}}
+        <div style="width:220px; background:#1C1C1E; min-height:calc(100vh - 56px); padding:20px 12px; position:fixed; top:56px; left:0; bottom:0; overflow-y:auto;">
+            <p style="color:#6B7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0 16px; margin-bottom:8px;">Testing</p>
+            <a href="/releases" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+                Releases
+            </a>
+            <a href="/testcases" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                Casos de Prueba
+            </a>
+            <a href="/testcases/import" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+                Importar .md
+            </a>
+
+            <p style="color:#6B7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0 16px; margin:20px 0 8px;">Configuracion</p>
+            <a href="/reports" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Reportes
+            </a>
+            <a href="/teams" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                Equipos
+            </a>
+            <a href="/knowledge" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                Conocimiento
+            </a>
+            {{if .IsAdmin}}
+            <p style="color:#6B7280; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; padding:0 16px; margin:20px 0 8px;">Admin</p>
+            <a href="/admin/users" class="sidebar-item">
+                <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                Usuarios
+            </a>
+            {{end}}
         </div>
         {{end}}
-        {{template "content" .}}
-    </main>
+
+        <!-- Main content -->
+        <div style="flex:1; margin-left:{{if .LoggedIn}}220px{{else}}0{{end}}; padding:28px 32px; min-height:calc(100vh - 56px);">
+            {{if .Flash}}
+            <div style="margin-bottom:20px; padding:12px 16px; border-radius:8px; font-size:14px; {{if eq .FlashKind "error"}}background:#FEE2E2; color:#991B1B; border:1px solid #FECACA;{{else}}background:#D1FAE5; color:#065F46; border:1px solid #A7F3D0;{{end}}">
+                {{.Flash}}
+            </div>
+            {{end}}
+            {{template "content" .}}
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" style="position:fixed; bottom:24px; left:50%; transform:translateX(-50%); background:#1C1C1E; color:white; padding:12px 24px; border-radius:100px; font-size:14px; font-weight:600; opacity:0; transition:opacity 0.3s; z-index:999; display:flex; align-items:center; gap:8px; pointer-events:none;">
+        <svg width="16" height="16" fill="none" stroke="#00A650" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+        Guardado
+    </div>
+    <script>
+    document.body.addEventListener('htmx:afterRequest', function(e) {
+        if (e.detail.successful) {
+            var t = document.getElementById('toast');
+            t.style.opacity = '1';
+            clearTimeout(t._h);
+            t._h = setTimeout(function(){ t.style.opacity = '0'; }, 2500);
+        }
+    });
+    </script>
 </body>
-</html>{{end}}
+</html>
+{{end}}

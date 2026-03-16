@@ -1,22 +1,45 @@
 {{define "content"}}
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Equipos</h1>
-    <a href="/teams/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Equipo</a>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <div>
+        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Equipos</h1>
+        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;">Administra los equipos de QA</p>
+    </div>
+    <a href="/teams/new" style="background:#009EE3; color:white; padding:10px 20px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+        <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+        Nuevo Equipo
+    </a>
 </div>
-<div class="bg-white rounded shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-100"><tr>
-            <th class="p-3 text-left">Nombre</th>
-            <th class="p-3 text-left">Descripción</th>
-        </tr></thead>
+
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#F9FAFB;">
+                <th style="text-align:left; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Nombre</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Descripcion</th>
+            </tr>
+        </thead>
         <tbody>
         {{range .Teams}}
-        <tr class="border-t">
-            <td class="p-3 font-medium">{{.Name}}</td>
-            <td class="p-3">{{.Description}}</td>
+        <tr style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
+            onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
+            <td style="padding:14px 24px;">
+                <div style="display:flex; align-items:center; gap:10px;">
+                    <div style="width:32px; height:32px; border-radius:8px; background:#009EE3; display:flex; align-items:center; justify-content:center;">
+                        <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                    </div>
+                    <span style="font-size:14px; font-weight:700; color:#1C1C1E;">{{.Name}}</span>
+                </div>
+            </td>
+            <td style="padding:14px 16px; font-size:13px; color:#6B7280;">{{.Description}}</td>
         </tr>
         {{else}}
-        <tr><td colspan="2" class="p-6 text-center text-gray-500">No hay equipos aún</td></tr>
+        <tr>
+            <td colspan="2" style="padding:48px; text-align:center;">
+                <p style="font-size:16px; font-weight:600; color:#374151; margin:0 0 8px;">No hay equipos aun</p>
+                <p style="font-size:13px; color:#9CA3AF; margin:0 0 20px;">Crea un equipo para organizar los reportes</p>
+                <a href="/teams/new" style="background:#009EE3; color:white; padding:10px 24px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none;">Crear primer equipo</a>
+            </td>
+        </tr>
         {{end}}
         </tbody>
     </table>

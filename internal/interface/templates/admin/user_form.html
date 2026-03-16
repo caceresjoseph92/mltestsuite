@@ -1,36 +1,54 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">{{if .IsNew}}Nuevo Usuario{{else}}Editar Usuario{{end}}</h1>
-<div class="bg-white rounded shadow p-6 max-w-lg">
-    <form method="POST" action="{{if .IsNew}}/admin/users{{else}}/admin/users/{{.User.ID}}{{end}}">
-        {{if not .IsNew}}<input type="hidden" name="_method" value="PUT">{{end}}
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Nombre</label>
-            <input type="text" name="name" value="{{if .User}}{{.User.Name}}{{end}}" class="w-full border rounded p-2" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Email</label>
-            <input type="email" name="email" value="{{if .User}}{{.User.Email}}{{end}}" class="w-full border rounded p-2" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Contraseña{{if not .IsNew}} (dejar vacío para no cambiar){{end}}</label>
-            <input type="password" name="password" class="w-full border rounded p-2" {{if .IsNew}}required{{end}}>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Rol</label>
-            <select name="role" class="w-full border rounded p-2">
-                <option value="user" {{if and .User (eq (printf "%s" .User.Role) "user")}}selected{{end}}>Usuario</option>
-                <option value="admin" {{if and .User (eq (printf "%s" .User.Role) "admin")}}selected{{end}}>Admin</option>
-            </select>
-        </div>
-        {{if not .IsNew}}
-        <div class="mb-4">
-            <label class="flex items-center gap-2">
-                <input type="checkbox" name="active" {{if .User.Active}}checked{{end}}>
-                <span class="text-sm">Activo</span>
-            </label>
-        </div>
-        {{end}}
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">{{if .IsNew}}Crear{{else}}Guardar{{end}}</button>
-    </form>
+<div style="margin-bottom:24px;">
+    <a href="/admin/users" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Usuarios</a>
+</div>
+
+<div style="max-width:560px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">{{if .IsNew}}Nuevo Usuario{{else}}Editar Usuario{{end}}</h1>
+
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <form method="POST" action="{{if .IsNew}}/admin/users{{else}}/admin/users/{{.User.ID}}{{end}}">
+            {{if not .IsNew}}<input type="hidden" name="_method" value="PUT">{{end}}
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Nombre</label>
+                <input type="text" name="name" value="{{if .User}}{{.User.Name}}{{end}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Email</label>
+                <input type="email" name="email" value="{{if .User}}{{.User.Email}}{{end}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Contrasena{{if not .IsNew}} <span style="font-weight:400; color:#9CA3AF;">(dejar vacio para no cambiar)</span>{{end}}</label>
+                <input type="password" name="password" {{if .IsNew}}required{{end}}
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Rol</label>
+                <select name="role"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    <option value="user" {{if and .User (eq (printf "%s" .User.Role) "user")}}selected{{end}}>Usuario</option>
+                    <option value="admin" {{if and .User (eq (printf "%s" .User.Role) "admin")}}selected{{end}}>Admin</option>
+                </select>
+            </div>
+            {{if not .IsNew}}
+            <div style="margin-bottom:24px;">
+                <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                    <input type="checkbox" name="active" {{if .User.Active}}checked{{end}} style="accent-color:#009EE3; width:16px; height:16px;">
+                    <span style="font-size:14px; font-weight:600; color:#374151;">Activo</span>
+                </label>
+            </div>
+            {{end}}
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                {{if .IsNew}}Crear{{else}}Guardar{{end}}
+            </button>
+        </form>
+    </div>
 </div>
 {{end}}

@@ -1,37 +1,68 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">Nuevo Caso de Prueba</h1>
-<div class="bg-white rounded shadow p-6 max-w-2xl">
-    <form method="POST" action="/testcases">
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Reporte</label>
-            <select name="report_id" class="w-full border rounded p-2" required>
-                <option value="">Seleccionar...</option>
-                {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
-            </select>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Título</label>
-            <input type="text" name="title" class="w-full border rounded p-2" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Prioridad</label>
-            <select name="priority" class="w-full border rounded p-2">
-                {{range .Priorities}}<option value="{{.}}">{{.}}</option>{{end}}
-            </select>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Precondiciones</label>
-            <textarea name="preconditions" class="w-full border rounded p-2" rows="3"></textarea>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Pasos</label>
-            <textarea name="steps" class="w-full border rounded p-2" rows="5"></textarea>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Resultado Esperado</label>
-            <textarea name="expected_result" class="w-full border rounded p-2" rows="3"></textarea>
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Crear Caso</button>
-    </form>
+<div style="margin-bottom:24px;">
+    <a href="/testcases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Casos de Prueba</a>
+</div>
+
+<div style="max-width:640px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Nuevo Caso de Prueba</h1>
+
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <form method="POST" action="/testcases">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Reporte</label>
+                <select name="report_id" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    <option value="">Seleccionar...</option>
+                    {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
+                </select>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Titulo</label>
+                <input type="text" name="title" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:10px;">Prioridad</label>
+                <div style="display:flex; gap:16px;">
+                    {{range .Priorities}}
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px; color:#374151;">
+                        <input type="radio" name="priority" value="{{.}}" style="accent-color:#009EE3;">
+                        {{if eq (printf "%s" .) "high"}}
+                        <span style="background:#FEE2E2; color:#991B1B; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">high</span>
+                        {{else if eq (printf "%s" .) "medium"}}
+                        <span style="background:#FEF3C7; color:#92400E; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">medium</span>
+                        {{else}}
+                        <span style="background:#D1FAE5; color:#065F46; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">low</span>
+                        {{end}}
+                    </label>
+                    {{end}}
+                </div>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Precondiciones</label>
+                <textarea name="preconditions" rows="3" placeholder="Condiciones previas necesarias..."
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Pasos</label>
+                <textarea name="steps" rows="5" placeholder="1. Paso uno&#10;2. Paso dos&#10;3. Paso tres"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Resultado Esperado</label>
+                <textarea name="expected_result" rows="3" placeholder="Que deberia suceder..."
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            </div>
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Crear Caso
+            </button>
+        </form>
+    </div>
 </div>
 {{end}}

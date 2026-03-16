@@ -1,27 +1,45 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">Editar Reporte</h1>
-<div class="bg-white rounded shadow p-6 max-w-lg">
-    <form method="POST" action="/reports/{{.Report.ID}}">
-        <input type="hidden" name="_method" value="PUT">
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Equipo</label>
-            <select name="team_id" class="w-full border rounded p-2" required>
-                {{range .Teams}}<option value="{{.ID}}" {{if eq .ID $.Report.TeamID}}selected{{end}}>{{.Name}}</option>{{end}}
-            </select>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Nombre</label>
-            <input type="text" name="name" value="{{.Report.Name}}" class="w-full border rounded p-2" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Tipo de Reporte</label>
-            <input type="text" name="report_type" value="{{.Report.ReportType}}" class="w-full border rounded p-2" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Descripción</label>
-            <textarea name="description" class="w-full border rounded p-2" rows="3">{{.Report.Description}}</textarea>
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar Cambios</button>
-    </form>
+<div style="margin-bottom:24px;">
+    <a href="/reports" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Reportes</a>
+</div>
+
+<div style="max-width:560px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Editar Reporte</h1>
+
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <form method="POST" action="/reports/{{.Report.ID}}">
+            <input type="hidden" name="_method" value="PUT">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Equipo</label>
+                <select name="team_id" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    {{range .Teams}}<option value="{{.ID}}" {{if eq .ID $.Report.TeamID}}selected{{end}}>{{.Name}}</option>{{end}}
+                </select>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Nombre</label>
+                <input type="text" name="name" value="{{.Report.Name}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Tipo de Reporte</label>
+                <input type="text" name="report_type" value="{{.Report.ReportType}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Descripcion</label>
+                <textarea name="description" rows="3"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.Report.Description}}</textarea>
+            </div>
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Guardar Cambios
+            </button>
+        </form>
+    </div>
 </div>
 {{end}}

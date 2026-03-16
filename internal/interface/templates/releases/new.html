@@ -1,20 +1,36 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">Nuevo Release</h1>
-<div class="bg-white rounded shadow p-6 max-w-lg">
-    <form method="POST" action="/releases">
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Versión</label>
-            <input type="text" name="version" class="w-full border rounded p-2" placeholder="v1.0.0" required>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Descripción</label>
-            <textarea name="description" class="w-full border rounded p-2" rows="3"></textarea>
-        </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Link del PR</label>
-            <input type="url" name="pr_link" class="w-full border rounded p-2" placeholder="https://github.com/...">
-        </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Crear Release</button>
-    </form>
+<div style="margin-bottom:24px;">
+    <a href="/releases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Releases</a>
+</div>
+
+<div style="max-width:560px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Nuevo Release</h1>
+
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <form method="POST" action="/releases">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Version</label>
+                <input type="text" name="version" placeholder="v1.0.0" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Descripcion</label>
+                <textarea name="description" rows="3" placeholder="Descripcion del release..."
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Link del PR <span style="font-weight:400; color:#9CA3AF;">(opcional)</span></label>
+                <input type="url" name="pr_link" placeholder="https://github.com/..."
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Crear Release
+            </button>
+        </form>
+    </div>
 </div>
 {{end}}

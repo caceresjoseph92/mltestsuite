@@ -1,36 +1,69 @@
 {{define "content"}}
-<div class="flex justify-between items-center mb-6">
-    <h1 class="text-2xl font-bold">Casos de Prueba</h1>
-    <div class="flex gap-2">
-        <a href="/testcases/import" class="bg-gray-600 text-white px-4 py-2 rounded hover:bg-gray-700">Importar</a>
-        <a href="/testcases/new" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Nuevo Caso</a>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <div>
+        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Casos de Prueba</h1>
+        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;">Gestiona los casos de prueba del sistema</p>
+    </div>
+    <div style="display:flex; gap:8px;">
+        <a href="/testcases/import" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:9px 20px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"/></svg>
+            Importar
+        </a>
+        <a href="/testcases/new" style="background:#009EE3; color:white; padding:10px 20px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none; display:inline-flex; align-items:center; gap:8px;">
+            <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+            Nuevo Caso
+        </a>
     </div>
 </div>
-<div class="bg-white rounded shadow overflow-hidden">
-    <table class="w-full">
-        <thead class="bg-gray-100"><tr>
-            <th class="p-3 text-left">Equipo</th>
-            <th class="p-3 text-left">Reporte</th>
-            <th class="p-3 text-left">Título</th>
-            <th class="p-3 text-left">Prioridad</th>
-            <th class="p-3 text-left">Creado por</th>
-            <th class="p-3 text-left">Acciones</th>
-        </tr></thead>
+
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+    <table style="width:100%; border-collapse:collapse;">
+        <thead>
+            <tr style="background:#F9FAFB;">
+                <th style="text-align:left; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Equipo</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Reporte</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Titulo</th>
+                <th style="text-align:center; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Prioridad</th>
+                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Creado por</th>
+                <th style="text-align:right; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Acciones</th>
+            </tr>
+        </thead>
         <tbody>
         {{range .TestCases}}
-        <tr class="border-t">
-            <td class="p-3">{{.TeamName}}</td>
-            <td class="p-3">{{.ReportName}}</td>
-            <td class="p-3"><a href="/testcases/{{.ID}}" class="text-blue-600 hover:underline">{{.Title}}</a></td>
-            <td class="p-3"><span class="px-2 py-1 rounded text-xs {{if eq (printf "%s" .Priority) "high"}}bg-red-100 text-red-800{{else if eq (printf "%s" .Priority) "medium"}}bg-yellow-100 text-yellow-800{{else}}bg-gray-100 text-gray-800{{end}}">{{.Priority}}</span></td>
-            <td class="p-3">{{.CreatedByName}}</td>
-            <td class="p-3">
-                <a href="/testcases/{{.ID}}/edit" class="text-blue-600 hover:underline">Editar</a>
-                <button hx-delete="/testcases/{{.ID}}" hx-confirm="¿Eliminar este caso?" hx-target="closest tr" hx-swap="outerHTML" class="text-red-600 hover:underline ml-2">Eliminar</button>
+        <tr style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
+            onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
+            <td style="padding:14px 24px; font-size:13px; color:#374151; font-weight:600;">{{.TeamName}}</td>
+            <td style="padding:14px 16px; font-size:13px; color:#6B7280;">{{.ReportName}}</td>
+            <td style="padding:14px 16px;">
+                <a href="/testcases/{{.ID}}" style="font-size:14px; font-weight:600; color:#1C1C1E; text-decoration:none;">{{.Title}}</a>
+            </td>
+            <td style="padding:14px 16px; text-align:center;">
+                {{if eq (printf "%s" .Priority) "high"}}
+                <span style="background:#FEE2E2; color:#991B1B; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">high</span>
+                {{else if eq (printf "%s" .Priority) "medium"}}
+                <span style="background:#FEF3C7; color:#92400E; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">medium</span>
+                {{else}}
+                <span style="background:#D1FAE5; color:#065F46; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">low</span>
+                {{end}}
+            </td>
+            <td style="padding:14px 16px; font-size:13px; color:#6B7280;">{{.CreatedByName}}</td>
+            <td style="padding:14px 24px; text-align:right;">
+                <div style="display:flex; justify-content:flex-end; gap:8px; align-items:center;">
+                    <a href="/testcases/{{.ID}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">Ver</a>
+                    <a href="/testcases/{{.ID}}/edit" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">Editar</a>
+                    <button hx-delete="/testcases/{{.ID}}" hx-confirm="Eliminar este caso?" hx-target="closest tr" hx-swap="outerHTML"
+                        style="background:none; border:none; color:#F23D4F; font-size:13px; font-weight:600; cursor:pointer; padding:0;">Eliminar</button>
+                </div>
             </td>
         </tr>
         {{else}}
-        <tr><td colspan="6" class="p-6 text-center text-gray-500">No hay casos de prueba aún</td></tr>
+        <tr>
+            <td colspan="6" style="padding:48px; text-align:center;">
+                <p style="font-size:16px; font-weight:600; color:#374151; margin:0 0 8px;">No hay casos de prueba aun</p>
+                <p style="font-size:13px; color:#9CA3AF; margin:0 0 20px;">Crea o importa casos de prueba para comenzar</p>
+                <a href="/testcases/new" style="background:#009EE3; color:white; padding:10px 24px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none;">Crear primer caso</a>
+            </td>
+        </tr>
         {{end}}
         </tbody>
     </table>

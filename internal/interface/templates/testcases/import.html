@@ -1,19 +1,67 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">Importar Casos desde Markdown</h1>
-<div class="bg-white rounded shadow p-6 max-w-2xl">
-    <form method="POST" action="/testcases/import">
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Reporte destino</label>
-            <select name="report_id" class="w-full border rounded p-2" required>
-                <option value="">Seleccionar...</option>
-                {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
-            </select>
+<div style="margin-bottom:24px;">
+    <a href="/testcases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Casos de Prueba</a>
+</div>
+
+<h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Importar Casos desde Markdown</h1>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+    <!-- Import form -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Importar desde .md</h2>
+        <form method="POST" action="/testcases/import">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Reporte destino</label>
+                <select name="report_id" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    <option value="">Seleccionar...</option>
+                    {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
+                </select>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Contenido Markdown (formato Claude)</label>
+                <textarea name="markdown" rows="20" placeholder="Pegue aqui el markdown generado por Claude..." required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            </div>
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Importar
+            </button>
+        </form>
+    </div>
+
+    <!-- Format info -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Formato esperado</h2>
+        <p style="font-size:13px; color:#6B7280; margin:0 0 16px;">El markdown debe seguir este formato para ser parseado correctamente:</p>
+        <div style="background:#F9FAFB; border-radius:8px; padding:16px; border:1px solid #F3F4F6;">
+            <pre style="font-size:12px; color:#374151; margin:0; overflow-x:auto; font-family:'SF Mono',Monaco,monospace; white-space:pre-wrap;">## Titulo del caso de prueba
+
+**Prioridad:** high|medium|low
+
+**Precondiciones:**
+- Condicion 1
+- Condicion 2
+
+**Pasos:**
+1. Primer paso
+2. Segundo paso
+3. Tercer paso
+
+**Resultado esperado:**
+Descripcion del resultado esperado.
+
+---
+
+## Segundo caso de prueba
+...</pre>
         </div>
-        <div class="mb-4">
-            <label class="block text-sm font-medium mb-1">Contenido Markdown (formato Claude)</label>
-            <textarea name="markdown" class="w-full border rounded p-2 font-mono text-sm" rows="20" placeholder="Pegue aquí el markdown generado por Claude..." required></textarea>
+        <div style="margin-top:16px; padding:12px 16px; background:#FEF3C7; border-radius:8px; border:1px solid #FDE68A;">
+            <p style="font-size:13px; color:#92400E; margin:0; font-weight:600;">Nota</p>
+            <p style="font-size:13px; color:#92400E; margin:4px 0 0;">Separa cada caso de prueba con una linea horizontal (---). Cada caso debe tener al menos un titulo y pasos.</p>
         </div>
-        <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Importar</button>
-    </form>
+    </div>
 </div>
 {{end}}

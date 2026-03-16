@@ -1,42 +1,96 @@
 {{define "content"}}
 {{if .TestCase}}
-<div class="mb-6">
-    <h1 class="text-2xl font-bold">{{.TestCase.Title}}</h1>
-    <p class="text-gray-600">{{.TestCase.TeamName}} / {{.TestCase.ReportName}}</p>
+<div style="margin-bottom:16px;">
+    <a href="/testcases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Casos de Prueba</a>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="font-bold mb-2">Detalles</h2>
-        <p><strong>Prioridad:</strong> {{.TestCase.Priority}}</p>
-        <p><strong>Precondiciones:</strong> {{.TestCase.Preconditions}}</p>
-        <p><strong>Pasos:</strong> {{.TestCase.Steps}}</p>
-        <p><strong>Resultado Esperado:</strong> {{.TestCase.ExpectedResult}}</p>
-        <p><strong>Creado por:</strong> {{.TestCase.CreatedByName}}</p>
-        {{if .TestCase.ReferenceImageURL}}<img src="{{.TestCase.ReferenceImageURL}}" class="mt-4 max-w-full rounded">{{end}}
+
+<!-- Header -->
+<div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:24px;">
+    <div>
+        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 6px;">{{.TestCase.Title}}</h1>
+        <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-size:13px; color:#009EE3; font-weight:600;">{{.TestCase.TeamName}}</span>
+            <span style="color:#D1D5DB;">/</span>
+            <span style="font-size:13px; color:#6B7280;">{{.TestCase.ReportName}}</span>
+            {{if eq (printf "%s" .TestCase.Priority) "high"}}
+            <span style="background:#FEE2E2; color:#991B1B; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">high</span>
+            {{else if eq (printf "%s" .TestCase.Priority) "medium"}}
+            <span style="background:#FEF3C7; color:#92400E; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">medium</span>
+            {{else}}
+            <span style="background:#D1FAE5; color:#065F46; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">low</span>
+            {{end}}
+        </div>
     </div>
-    <div class="space-y-4">
-        <div class="bg-white rounded shadow p-6">
-            <h2 class="font-bold mb-2">Subir Imagen de Referencia</h2>
+    <a href="/testcases/{{.TestCase.ID}}/edit" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none;">Editar</a>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+    <!-- Details card -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Detalles</h2>
+        <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Precondiciones</div>
+            <p style="font-size:14px; color:#374151; margin:0; white-space:pre-wrap;">{{.TestCase.Preconditions}}</p>
+        </div>
+        <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Pasos</div>
+            <p style="font-size:14px; color:#374151; margin:0; white-space:pre-wrap;">{{.TestCase.Steps}}</p>
+        </div>
+        <div style="margin-bottom:16px;">
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Resultado Esperado</div>
+            <p style="font-size:14px; color:#374151; margin:0; white-space:pre-wrap;">{{.TestCase.ExpectedResult}}</p>
+        </div>
+        <div>
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:4px;">Creado por</div>
+            <p style="font-size:14px; color:#374151; margin:0;">{{.TestCase.CreatedByName}}</p>
+        </div>
+        {{if .TestCase.ReferenceImageURL}}
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Imagen de Referencia</div>
+            <img src="{{.TestCase.ReferenceImageURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB;">
+        </div>
+        {{end}}
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:24px;">
+        <!-- Upload image card -->
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Subir Imagen de Referencia</h2>
             <form method="POST" action="/testcases/{{.TestCase.ID}}/image" enctype="multipart/form-data">
-                <input type="file" name="image" accept="image/*" class="mb-2">
-                <button type="submit" class="bg-blue-600 text-white px-3 py-1 rounded text-sm hover:bg-blue-700">Subir</button>
+                <input type="file" name="image" accept="image/*" style="margin-bottom:12px; font-size:13px;">
+                <div>
+                    <button type="submit" style="background:#009EE3; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
+                        onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                        Subir
+                    </button>
+                </div>
             </form>
         </div>
-        <div class="bg-white rounded shadow p-6">
-            <h2 class="font-bold mb-2">Campos JSON</h2>
+
+        <!-- JSON Fields card -->
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Campos JSON</h2>
             {{range .TestCase.Fields}}
-            <div class="mb-3 p-3 bg-gray-50 rounded">
-                <div class="flex justify-between items-center">
-                    <strong>{{.FieldName}}</strong>
-                    <button hx-delete="/testcases/fields/{{.ID}}" hx-confirm="¿Eliminar?" hx-target="closest div" hx-swap="outerHTML" class="text-red-600 text-sm hover:underline">Eliminar</button>
+            <div style="margin-bottom:12px; padding:12px; background:#F9FAFB; border-radius:8px; border:1px solid #F3F4F6;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                    <strong style="font-size:13px; color:#1C1C1E;">{{.FieldName}}</strong>
+                    <button hx-delete="/testcases/fields/{{.ID}}" hx-confirm="Eliminar?" hx-target="closest div" hx-swap="outerHTML"
+                        style="background:none; border:none; color:#F23D4F; font-size:12px; font-weight:600; cursor:pointer;">Eliminar</button>
                 </div>
-                <pre class="text-xs mt-1 overflow-x-auto">{{.ExpectedJSON}}</pre>
+                <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace;">{{.ExpectedJSON}}</pre>
             </div>
             {{end}}
-            <form method="POST" action="/testcases/{{.TestCase.ID}}/fields" class="mt-4">
-                <input type="text" name="field_name" placeholder="Nombre del campo" class="w-full border rounded p-2 mb-2" required>
-                <textarea name="expected_json" placeholder='{"key": "value"}' class="w-full border rounded p-2 mb-2 font-mono text-sm" rows="4" required></textarea>
-                <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Agregar Campo</button>
+            <form method="POST" action="/testcases/{{.TestCase.ID}}/fields" style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
+                <input type="text" name="field_name" placeholder="Nombre del campo" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; margin-bottom:8px;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                <textarea name="expected_json" placeholder='{"key": "value"}' rows="4" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace; margin-bottom:8px;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+                <button type="submit" style="background:#00A650; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
+                    onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#00A650'">
+                    Agregar Campo
+                </button>
             </form>
         </div>
     </div>
@@ -44,49 +98,95 @@
 {{end}}
 
 {{if .Execution}}
-<div class="mb-6">
-    <h1 class="text-2xl font-bold">Ejecución: {{.Execution.TestCaseTitle}}</h1>
-    <p class="text-gray-600">{{.Execution.TeamName}} / {{.Execution.ReportName}}</p>
+<div style="margin-bottom:16px;">
+    <a href="/releases/{{.Execution.ReleaseID}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver al Release</a>
 </div>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="font-bold mb-4">Actualizar Estado</h2>
+
+<!-- Execution Header -->
+<div style="margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 6px;">Ejecucion: {{.Execution.TestCaseTitle}}</h1>
+    <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:13px; color:#009EE3; font-weight:600;">{{.Execution.TeamName}}</span>
+        <span style="color:#D1D5DB;">/</span>
+        <span style="font-size:13px; color:#6B7280;">{{.Execution.ReportName}}</span>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+    <!-- Status update card -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Actualizar Estado</h2>
         <form method="POST" action="/executions/{{.Execution.ID}}/status" enctype="multipart/form-data">
             <input type="hidden" name="_method" value="PATCH">
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Estado</label>
-                <select name="status" class="w-full border rounded p-2">
-                    {{range .Statuses}}<option value="{{.}}" {{if eq (printf "%s" $) (printf "%s" $.Execution.Status)}}selected{{end}}>{{statusLabel .}}</option>{{end}}
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Estado</label>
+                <select name="status"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    {{range .Statuses}}<option value="{{.}}" {{if eq (printf "%s" .) (printf "%s" $.Execution.Status)}}selected{{end}}>{{statusLabel .}}</option>{{end}}
                 </select>
             </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Notas</label>
-                <textarea name="notes" class="w-full border rounded p-2" rows="3">{{.Execution.Notes}}</textarea>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Notas</label>
+                <textarea name="notes" rows="3"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.Execution.Notes}}</textarea>
             </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Screenshot (opcional)</label>
-                <input type="file" name="screenshot" accept="image/*">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Screenshot <span style="font-weight:400; color:#9CA3AF;">(opcional)</span></label>
+                <input type="file" name="screenshot" accept="image/*" style="font-size:13px;">
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Guardar
+            </button>
         </form>
-        {{if .Execution.ScreenshotURL}}<img src="{{.Execution.ScreenshotURL}}" class="mt-4 max-w-full rounded">{{end}}
+        {{if .Execution.ScreenshotURL}}
+        <div style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
+            <div style="font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; margin-bottom:8px;">Screenshot actual</div>
+            <img src="{{.Execution.ScreenshotURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB;">
+        </div>
+        {{end}}
     </div>
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="font-bold mb-4">Comparación JSON</h2>
+
+    <!-- JSON Comparison card -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Comparacion JSON</h2>
         {{range .Execution.Fields}}
-        <div class="mb-4 p-3 bg-gray-50 rounded">
-            <strong>{{.FieldName}}</strong>
-            {{if .Matches}}{{if derefBool .Matches}}<span class="text-green-600 ml-2">MATCH</span>{{else}}<span class="text-red-600 ml-2">NO MATCH</span>{{end}}{{end}}
-            <div class="grid grid-cols-2 gap-2 mt-2 text-xs font-mono">
-                <div><p class="font-bold text-gray-600">Esperado:</p><pre class="overflow-x-auto">{{.ExpectedJSON}}</pre></div>
-                <div><p class="font-bold text-gray-600">Actual:</p><pre class="overflow-x-auto">{{.ActualJSON}}</pre></div>
+        <div style="margin-bottom:12px; padding:12px; background:#F9FAFB; border-radius:8px; border:1px solid #F3F4F6;">
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+                <strong style="font-size:13px; color:#1C1C1E;">{{.FieldName}}</strong>
+                {{if .Matches}}
+                    {{if derefBool .Matches}}
+                    <span style="background:#D1FAE5; color:#065F46; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700;">MATCH</span>
+                    {{else}}
+                    <span style="background:#FEE2E2; color:#991B1B; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:700;">NO MATCH</span>
+                    {{end}}
+                {{end}}
+            </div>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+                <div>
+                    <p style="font-size:11px; font-weight:700; color:#6B7280; margin:0 0 4px;">Esperado:</p>
+                    <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace; background:white; padding:8px; border-radius:6px; border:1px solid #E5E7EB;">{{.ExpectedJSON}}</pre>
+                </div>
+                <div>
+                    <p style="font-size:11px; font-weight:700; color:#6B7280; margin:0 0 4px;">Actual:</p>
+                    <pre style="font-size:12px; margin:0; overflow-x:auto; color:#374151; font-family:'SF Mono',Monaco,monospace; background:white; padding:8px; border-radius:6px; border:1px solid #E5E7EB;">{{.ActualJSON}}</pre>
+                </div>
             </div>
         </div>
         {{end}}
-        <form method="POST" action="/executions/{{.Execution.ID}}/compare" class="mt-4">
-            <input type="text" name="field_name" placeholder="Nombre del campo" class="w-full border rounded p-2 mb-2" required>
-            <textarea name="actual_json" placeholder='{"key": "value"}' class="w-full border rounded p-2 mb-2 font-mono text-sm" rows="4" required></textarea>
-            <button type="submit" class="bg-green-600 text-white px-3 py-1 rounded text-sm hover:bg-green-700">Comparar</button>
+        <form method="POST" action="/executions/{{.Execution.ID}}/compare" style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6;">
+            <input type="text" name="field_name" placeholder="Nombre del campo" required
+                style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; margin-bottom:8px;"
+                onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            <textarea name="actual_json" placeholder='{"key": "value"}' rows="4" required
+                style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace; margin-bottom:8px;"
+                onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+            <button type="submit" style="background:#00A650; color:white; border:none; padding:8px 16px; border-radius:6px; font-size:13px; font-weight:600; cursor:pointer; transition:background 0.2s;"
+                onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#00A650'">
+                Comparar
+            </button>
         </form>
     </div>
 </div>

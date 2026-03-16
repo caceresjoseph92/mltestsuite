@@ -1,35 +1,70 @@
 {{define "content"}}
-<h1 class="text-2xl font-bold mb-6">Base de Conocimiento</h1>
-<div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="font-bold mb-4">Editar Documento</h2>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <div>
+        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Base de Conocimiento</h1>
+        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;">Documentacion de reglas de negocio y contexto QA</p>
+    </div>
+</div>
+
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
+    <!-- Editor -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Editar Documento</h2>
         <form method="POST" action="/knowledge">
             {{if .Document}}<input type="hidden" name="id" value="{{.Document.ID}}">{{end}}
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Título</label>
-                <input type="text" name="title" value="{{if .Document}}{{.Document.Title}}{{end}}" class="w-full border rounded p-2" required>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Titulo</label>
+                <input type="text" name="title" value="{{if .Document}}{{.Document.Title}}{{end}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
             </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Tipo de Reporte</label>
-                <input type="text" name="report_type" value="{{if .Document}}{{.Document.ReportType}}{{end}}" class="w-full border rounded p-2">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Tipo de Reporte</label>
+                <input type="text" name="report_type" value="{{if .Document}}{{.Document.ReportType}}{{end}}"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
             </div>
-            <div class="mb-4">
-                <label class="block text-sm font-medium mb-1">Contenido (Markdown)</label>
-                <textarea name="content" class="w-full border rounded p-2 font-mono text-sm" rows="20">{{if .Document}}{{.Document.Content}}{{end}}</textarea>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Contenido (Markdown)</label>
+                <textarea name="content" rows="20"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:13px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{if .Document}}{{.Document.Content}}{{end}}</textarea>
             </div>
-            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Guardar</button>
+            <div style="display:flex; gap:8px;">
+                <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                    onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                    Guardar
+                </button>
+                {{if .Document}}
+                <a href="/knowledge/download" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:9px 20px; border-radius:8px; font-size:14px; font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Descargar .md
+                </a>
+                {{end}}
+            </div>
         </form>
     </div>
-    <div class="bg-white rounded shadow p-6">
-        <h2 class="font-bold mb-4">Documentos</h2>
+
+    <!-- Documents list -->
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Documentos</h2>
         {{range .Documents}}
-        <div class="mb-3 p-3 bg-gray-50 rounded">
-            <strong>{{.Title}}</strong>
-            <span class="text-xs text-gray-500 ml-2">{{.ReportType}}</span>
-            <p class="text-sm text-gray-600 mt-1">Actualizado: {{.UpdatedAt.Format "2006-01-02 15:04"}}</p>
+        <div style="margin-bottom:12px; padding:14px; background:#F9FAFB; border-radius:8px; border:1px solid #F3F4F6; transition:background 0.15s;"
+            onmouseover="this.style.background='#F3F4F6'" onmouseout="this.style.background='#F9FAFB'">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+                <div>
+                    <strong style="font-size:14px; color:#1C1C1E;">{{.Title}}</strong>
+                    {{if .ReportType}}
+                    <span style="background:#F3F4F6; color:#6B7280; padding:2px 8px; border-radius:20px; font-size:11px; font-weight:600; margin-left:6px;">{{.ReportType}}</span>
+                    {{end}}
+                </div>
+            </div>
+            <p style="font-size:12px; color:#9CA3AF; margin:6px 0 0;">Actualizado: {{.UpdatedAt.Format "2006-01-02 15:04"}}</p>
         </div>
         {{else}}
-        <p class="text-gray-500">No hay documentos aún</p>
+        <div style="text-align:center; padding:32px;">
+            <p style="font-size:14px; color:#9CA3AF; margin:0;">No hay documentos aun</p>
+        </div>
         {{end}}
     </div>
 </div>
