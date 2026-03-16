@@ -1,9 +1,147 @@
 {{define "content"}}
+
+<!-- Tutorial Modal -->
+<div id="tutorial-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6); z-index:200; align-items:center; justify-content:center; padding:16px;">
+    <div style="background:white; border-radius:20px; max-width:580px; width:100%; box-shadow:0 24px 80px rgba(0,0,0,0.25); overflow:hidden; position:relative;">
+
+        <!-- Slides -->
+        <div id="slides-container" style="overflow:hidden;">
+
+            <!-- Slide 1 -->
+            <div class="slide" style="padding:40px 36px; text-align:center;">
+                <div style="width:72px; height:72px; background:#FFE600; border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
+                    <svg width="36" height="36" fill="none" stroke="#1C1C1E" stroke-width="2" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                </div>
+                <h2 style="font-size:20px; font-weight:800; color:#1C1C1E; margin:0 0 12px;">Importar desde Claude</h2>
+                <p style="font-size:14px; color:#6B7280; margin:0; line-height:1.7;">Le pedís a <strong style="color:#1C1C1E;">Claude</strong> que genere casos de prueba en formato Markdown, y los importás directamente acá. Sin escribir nada a mano.</p>
+                <div style="margin-top:24px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+                    <span style="background:#F3F4F6; color:#374151; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;">📋 Claude genera</span>
+                    <span style="background:#F3F4F6; color:#374151; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;">📥 Vos importás</span>
+                    <span style="background:#F3F4F6; color:#374151; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;">✅ Casos listos</span>
+                </div>
+            </div>
+
+            <!-- Slide 2 -->
+            <div class="slide" style="padding:36px; display:none;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+                    <div style="width:44px; height:44px; background:#1C1C1E; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <span style="color:#FFE600; font-weight:900; font-size:18px;">1</span>
+                    </div>
+                    <div>
+                        <h3 style="font-size:16px; font-weight:800; color:#1C1C1E; margin:0;">Generá el Prompt en Reportes</h3>
+                        <p style="font-size:13px; color:#6B7280; margin:0;">Descargá el contexto de negocio para Claude</p>
+                    </div>
+                </div>
+                <div style="background:#F9FAFB; border-radius:12px; padding:20px; border:1px solid #F3F4F6;">
+                    <p style="font-size:13px; color:#374151; margin:0 0 12px; line-height:1.6;">Andá a <strong>Reportes</strong>, buscá el reporte que querés probar y hacé click en el botón:</p>
+                    <div style="display:inline-flex; align-items:center; gap:5px; background:#1C1C1E; color:#FFE600; padding:7px 14px; border-radius:6px; font-size:13px; font-weight:700;">
+                        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                        Prompt Claude
+                    </div>
+                    <p style="font-size:13px; color:#6B7280; margin:12px 0 0; line-height:1.6;">Se descargará un archivo <code style="background:#E5E7EB; padding:1px 6px; border-radius:4px; font-size:12px;">claude_prompt.md</code> con todo el contexto del negocio y los casos existentes.</p>
+                </div>
+            </div>
+
+            <!-- Slide 3 -->
+            <div class="slide" style="padding:36px; display:none;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+                    <div style="width:44px; height:44px; background:#1C1C1E; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <span style="color:#FFE600; font-weight:900; font-size:18px;">2</span>
+                    </div>
+                    <div>
+                        <h3 style="font-size:16px; font-weight:800; color:#1C1C1E; margin:0;">Pegalo en Claude y pedile los casos</h3>
+                        <p style="font-size:13px; color:#6B7280; margin:0;">Claude genera los casos con el formato correcto</p>
+                    </div>
+                </div>
+                <div style="background:#F9FAFB; border-radius:12px; padding:20px; border:1px solid #F3F4F6;">
+                    <p style="font-size:13px; color:#374151; margin:0 0 12px; line-height:1.6;">Abrí <strong>claude.ai</strong>, pegá el contenido del archivo y describí el desarrollo que querés probar. Claude responderá con casos en este formato:</p>
+                    <pre style="background:#1C1C1E; color:#FFE600; padding:14px; border-radius:8px; font-size:11px; margin:0; overflow-x:auto; font-family:'SF Mono',Monaco,monospace; line-height:1.6;">---
+## TC: Validar estado de cuenta activo
+priority: high
+preconditions: Usuario con cuenta activa
+expected_result: Retorna balance correcto
+
+### request_parameters_json
+{"account_id": "123", "status": "active"}
+---</pre>
+                </div>
+            </div>
+
+            <!-- Slide 4 -->
+            <div class="slide" style="padding:36px; display:none;">
+                <div style="display:flex; align-items:center; gap:12px; margin-bottom:24px;">
+                    <div style="width:44px; height:44px; background:#1C1C1E; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                        <span style="color:#FFE600; font-weight:900; font-size:18px;">3</span>
+                    </div>
+                    <div>
+                        <h3 style="font-size:16px; font-weight:800; color:#1C1C1E; margin:0;">Pegá la respuesta acá y listo</h3>
+                        <p style="font-size:13px; color:#6B7280; margin:0;">Los casos se crean automáticamente</p>
+                    </div>
+                </div>
+                <div style="background:#F9FAFB; border-radius:12px; padding:20px; border:1px solid #F3F4F6;">
+                    <div style="display:flex; flex-direction:column; gap:12px;">
+                        <div style="display:flex; gap:10px; align-items:flex-start;">
+                            <div style="width:24px; height:24px; background:#D1FAE5; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                                <svg width="12" height="12" fill="none" stroke="#065F46" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">Seleccioná el <strong>Reporte destino</strong> donde van a vivir los casos</p>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:flex-start;">
+                            <div style="width:24px; height:24px; background:#D1FAE5; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                                <svg width="12" height="12" fill="none" stroke="#065F46" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">Pegá el texto completo que te respondió Claude en el cuadro de texto</p>
+                        </div>
+                        <div style="display:flex; gap:10px; align-items:flex-start;">
+                            <div style="width:24px; height:24px; background:#D1FAE5; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px;">
+                                <svg width="12" height="12" fill="none" stroke="#065F46" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>
+                            </div>
+                            <p style="font-size:13px; color:#374151; margin:0; line-height:1.6;">Click en <strong>Importar</strong> — los casos aparecen en Casos de Prueba listos para usar en un Release</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer: dots + botones -->
+        <div style="padding:20px 36px; border-top:1px solid #F3F4F6; display:flex; justify-content:space-between; align-items:center;">
+            <!-- Dots -->
+            <div style="display:flex; gap:6px;" id="dots">
+                <div class="dot active-dot" style="width:8px; height:8px; border-radius:50%; background:#1C1C1E;"></div>
+                <div class="dot" style="width:8px; height:8px; border-radius:50%; background:#E5E7EB;"></div>
+                <div class="dot" style="width:8px; height:8px; border-radius:50%; background:#E5E7EB;"></div>
+                <div class="dot" style="width:8px; height:8px; border-radius:50%; background:#E5E7EB;"></div>
+            </div>
+            <!-- Buttons -->
+            <div style="display:flex; gap:8px;">
+                <button id="btn-prev" onclick="prevSlide()" style="display:none; background:white; border:1.5px solid #E5E7EB; color:#374151; padding:8px 18px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer;">
+                    ← Anterior
+                </button>
+                <button id="btn-next" onclick="nextSlide()" style="background:#1C1C1E; color:#FFE600; border:none; padding:8px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+                    Siguiente →
+                </button>
+                <button id="btn-finish" onclick="closeTutorial()" style="display:none; background:#009EE3; color:white; border:none; padding:8px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;">
+                    ¡Entendido!
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div style="margin-bottom:24px;">
     <a href="/testcases" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Casos de Prueba</a>
 </div>
 
-<h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Importar Casos desde Markdown</h1>
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Importar Casos desde Markdown</h1>
+    <button onclick="openTutorial()"
+        style="display:inline-flex; align-items:center; gap:7px; background:#FFE600; border:none; color:#1C1C1E; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;"
+        onmouseover="this.style.background='#f0d800'" onmouseout="this.style.background='#FFE600'">
+        <svg width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+        ¿Cómo funciona?
+    </button>
+</div>
 
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
     <!-- Import form -->
@@ -36,32 +174,86 @@
     <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
         <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Formato esperado</h2>
         <p style="font-size:13px; color:#6B7280; margin:0 0 16px;">El markdown debe seguir este formato para ser parseado correctamente:</p>
-        <div style="background:#F9FAFB; border-radius:8px; padding:16px; border:1px solid #F3F4F6;">
-            <pre style="font-size:12px; color:#374151; margin:0; overflow-x:auto; font-family:'SF Mono',Monaco,monospace; white-space:pre-wrap;">## Titulo del caso de prueba
+        <div style="background:#1C1C1E; border-radius:8px; padding:16px;">
+            <pre style="font-size:12px; color:#FFE600; margin:0; overflow-x:auto; font-family:'SF Mono',Monaco,monospace; white-space:pre-wrap; line-height:1.7;">---
+## TC: Nombre del caso
+priority: high|medium|low
+preconditions: Condición inicial
+expected_result: Qué debe ocurrir
 
-**Prioridad:** high|medium|low
-
-**Precondiciones:**
-- Condicion 1
-- Condicion 2
-
-**Pasos:**
-1. Primer paso
-2. Segundo paso
-3. Tercer paso
-
-**Resultado esperado:**
-Descripcion del resultado esperado.
-
----
-
-## Segundo caso de prueba
-...</pre>
+### nombre_campo_json
+{"clave": "valor"}
+---</pre>
         </div>
         <div style="margin-top:16px; padding:12px 16px; background:#FEF3C7; border-radius:8px; border:1px solid #FDE68A;">
-            <p style="font-size:13px; color:#92400E; margin:0; font-weight:600;">Nota</p>
-            <p style="font-size:13px; color:#92400E; margin:4px 0 0;">Separa cada caso de prueba con una linea horizontal (---). Cada caso debe tener al menos un titulo y pasos.</p>
+            <p style="font-size:13px; color:#92400E; margin:0; font-weight:600;">Tip</p>
+            <p style="font-size:13px; color:#92400E; margin:4px 0 0;">Separar cada caso con <code style="background:rgba(0,0,0,0.08); padding:1px 5px; border-radius:3px;">---</code>. El título del caso va después de <code style="background:rgba(0,0,0,0.08); padding:1px 5px; border-radius:3px;">## TC:</code></p>
         </div>
     </div>
 </div>
+
+<script>
+var currentSlide = 0;
+var totalSlides = 4;
+
+function openTutorial() {
+    currentSlide = 0;
+    updateSlide();
+    var m = document.getElementById('tutorial-modal');
+    m.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+function closeTutorial() {
+    document.getElementById('tutorial-modal').style.display = 'none';
+    document.body.style.overflow = '';
+}
+function nextSlide() {
+    if (currentSlide < totalSlides - 1) {
+        currentSlide++;
+        updateSlide();
+    }
+}
+function prevSlide() {
+    if (currentSlide > 0) {
+        currentSlide--;
+        updateSlide();
+    }
+}
+function updateSlide() {
+    var slides = document.querySelectorAll('.slide');
+    slides.forEach(function(s, i) {
+        s.style.display = i === currentSlide ? 'block' : 'none';
+    });
+    // Slide 0 is flex-centered
+    if (currentSlide === 0) slides[0].style.display = 'block';
+
+    // Dots
+    var dots = document.querySelectorAll('.dot');
+    dots.forEach(function(d, i) {
+        d.style.background = i === currentSlide ? '#1C1C1E' : '#E5E7EB';
+        d.style.width = i === currentSlide ? '20px' : '8px';
+        d.style.borderRadius = '4px';
+        d.style.transition = 'all 0.2s';
+    });
+
+    // Buttons
+    document.getElementById('btn-prev').style.display = currentSlide > 0 ? 'block' : 'none';
+    document.getElementById('btn-next').style.display = currentSlide < totalSlides - 1 ? 'block' : 'none';
+    document.getElementById('btn-finish').style.display = currentSlide === totalSlides - 1 ? 'block' : 'none';
+}
+
+// Click outside to close
+document.getElementById('tutorial-modal').addEventListener('click', function(e) {
+    if (e.target === this) closeTutorial();
+});
+// Keyboard nav
+document.addEventListener('keydown', function(e) {
+    var modal = document.getElementById('tutorial-modal');
+    if (modal.style.display === 'flex') {
+        if (e.key === 'ArrowRight') nextSlide();
+        if (e.key === 'ArrowLeft') prevSlide();
+        if (e.key === 'Escape') closeTutorial();
+    }
+});
+</script>
 {{end}}
