@@ -3,6 +3,7 @@ package http
 import (
 	"net/http"
 
+	apptesting "mltestsuite/internal/application/testing"
 	appuser "mltestsuite/internal/application/user"
 	"mltestsuite/internal/domain/user"
 
@@ -11,13 +12,14 @@ import (
 
 // UserHandler maneja la gestion de usuarios (solo admin).
 type UserHandler struct {
-	service *appuser.Service
-	tmpl    *Renderer
+	service        *appuser.Service
+	testingService *apptesting.Service
+	tmpl           *Renderer
 }
 
 // NewUserHandler crea el handler de usuarios.
-func NewUserHandler(service *appuser.Service, tmpl *Renderer) *UserHandler {
-	return &UserHandler{service: service, tmpl: tmpl}
+func NewUserHandler(service *appuser.Service, testingService *apptesting.Service, tmpl *Renderer) *UserHandler {
+	return &UserHandler{service: service, testingService: testingService, tmpl: tmpl}
 }
 
 // List muestra la lista de usuarios.
@@ -34,12 +36,14 @@ func (h *UserHandler) List(w http.ResponseWriter, r *http.Request) {
 
 // ShowCreate muestra el formulario de creacion de usuario.
 func (h *UserHandler) ShowCreate(w http.ResponseWriter, r *http.Request) {
+	teams, _ := h.testingService.ListTeams(r.Context())
 	h.tmpl.ExecuteTemplate(w, "admin/user_form.html", withFlash(w, r, map[string]any{
 		"IsNew": true,
+		"Teams": teams,
 	}))
 }
 
-// Create crea un nuevo usuario via el servicio de auth (register).
+// Create crea un nuevo usuario.
 func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 	input := appuser.UpdateUserInput{
 		Name:     r.FormValue("name"),
@@ -48,18 +52,16 @@ func (h *UserHandler) Create(w http.ResponseWriter, r *http.Request) {
 		Active:   true,
 		Password: r.FormValue("password"),
 	}
-	// Create a new user directly via the user service (admin flow)
-	// We use the auth service Register behind the scenes or directly create
-	// For simplicity, we create via repo through service
-	newID := uuid.New()
-	if err := h.service.UpdateUser(r.Context(), newID, input); err != nil {
-		// If update fails (user not found), it means we need to create
-		// For admin user creation, we redirect with error
+	if teamIDStr := r.FormValue("team_id"); teamIDStr != "" {
+		if id, err := uuid.Parse(teamIDStr); err == nil {
+			input.TeamID = &id
+		}
+	}
+	if err := h.service.CreateUser(r.Context(), input); err != nil {
 		setFlash(w, "error", "Error creando usuario: "+err.Error())
 		http.Redirect(w, r, "/admin/users/new", http.StatusSeeOther)
 		return
 	}
-
 	setFlash(w, "success", "Usuario creado correctamente")
 	http.Redirect(w, r, "/admin/users", http.StatusSeeOther)
 }
@@ -75,9 +77,11 @@ func (h *UserHandler) ShowEdit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Usuario no encontrado", http.StatusNotFound)
 		return
 	}
+	teams, _ := h.testingService.ListTeams(r.Context())
 	h.tmpl.ExecuteTemplate(w, "admin/user_form.html", withFlash(w, r, map[string]any{
 		"IsNew": false,
 		"User":  u,
+		"Teams": teams,
 	}))
 }
 
@@ -95,6 +99,11 @@ func (h *UserHandler) Update(w http.ResponseWriter, r *http.Request) {
 		Role:     user.Role(r.FormValue("role")),
 		Active:   r.FormValue("active") == "on",
 		Password: r.FormValue("password"),
+	}
+	if teamIDStr := r.FormValue("team_id"); teamIDStr != "" {
+		if tid, err := uuid.Parse(teamIDStr); err == nil {
+			input.TeamID = &tid
+		}
 	}
 	if err := h.service.UpdateUser(r.Context(), id, input); err != nil {
 		setFlash(w, "error", err.Error())

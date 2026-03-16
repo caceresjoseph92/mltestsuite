@@ -8,6 +8,7 @@ import (
 	"time"
 
 	apptesting "mltestsuite/internal/application/testing"
+	appuser "mltestsuite/internal/application/user"
 	domain "mltestsuite/internal/domain/testing"
 	"mltestsuite/internal/infrastructure/cloudinary"
 
@@ -17,14 +18,15 @@ import (
 
 // TestingHandler maneja todos los endpoints de testing (teams, reports, testcases, releases, executions, knowledge).
 type TestingHandler struct {
-	service  *apptesting.Service
-	uploader *cloudinary.Uploader
-	renderer *Renderer
+	service     *apptesting.Service
+	userService *appuser.Service
+	uploader    *cloudinary.Uploader
+	renderer    *Renderer
 }
 
 // NewTestingHandler crea el handler de testing.
-func NewTestingHandler(service *apptesting.Service, uploader *cloudinary.Uploader, renderer *Renderer) *TestingHandler {
-	return &TestingHandler{service: service, uploader: uploader, renderer: renderer}
+func NewTestingHandler(service *apptesting.Service, userService *appuser.Service, uploader *cloudinary.Uploader, renderer *Renderer) *TestingHandler {
+	return &TestingHandler{service: service, userService: userService, uploader: uploader, renderer: renderer}
 }
 
 // parseUUID parsea un path value como UUID, retorna 400 si es invalido.
@@ -40,14 +42,40 @@ func parseUUID(w http.ResponseWriter, r *http.Request, name string) (uuid.UUID, 
 
 // -- Teams -------------------------------------------------------------------
 
+type teamVM struct {
+	ID          interface{}
+	Name        string
+	Description string
+	Members     []string
+}
+
 func (h *TestingHandler) ListTeams(w http.ResponseWriter, r *http.Request) {
 	teams, err := h.service.ListTeams(r.Context())
 	if err != nil {
 		http.Error(w, "Error interno", http.StatusInternalServerError)
 		return
 	}
+	users, _ := h.userService.ListUsers(r.Context())
+
+	// Group member names by team ID
+	membersByTeam := map[uuid.UUID][]string{}
+	for _, u := range users {
+		if u.TeamID != nil {
+			membersByTeam[*u.TeamID] = append(membersByTeam[*u.TeamID], u.Name)
+		}
+	}
+
+	vms := make([]teamVM, len(teams))
+	for i, t := range teams {
+		vms[i] = teamVM{
+			ID:          t.ID,
+			Name:        t.Name,
+			Description: t.Description,
+			Members:     membersByTeam[t.ID],
+		}
+	}
 	h.renderer.ExecuteTemplate(w, "teams/list.html", withFlash(w, r, map[string]any{
-		"Teams": teams,
+		"Teams": vms,
 	}))
 }
 
@@ -69,6 +97,42 @@ func (h *TestingHandler) CreateTeam(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	setFlash(w, "success", "Equipo creado correctamente")
+	http.Redirect(w, r, "/teams", http.StatusSeeOther)
+}
+
+func (h *TestingHandler) ShowEditTeam(w http.ResponseWriter, r *http.Request) {
+	id, ok := parseUUID(w, r, "id")
+	if !ok {
+		return
+	}
+	team, err := h.service.GetTeam(r.Context(), id)
+	if err != nil {
+		http.Error(w, "Equipo no encontrado", http.StatusNotFound)
+		return
+	}
+	h.renderer.ExecuteTemplate(w, "teams/edit.html", withFlash(w, r, map[string]any{
+		"Team": team,
+	}))
+}
+
+func (h *TestingHandler) UpdateTeam(w http.ResponseWriter, r *http.Request) {
+	id, ok := parseUUID(w, r, "id")
+	if !ok {
+		return
+	}
+	name := r.FormValue("name")
+	description := r.FormValue("description")
+	if name == "" {
+		setFlash(w, "error", "El nombre es obligatorio")
+		http.Redirect(w, r, fmt.Sprintf("/teams/%s/edit", id), http.StatusSeeOther)
+		return
+	}
+	if err := h.service.UpdateTeam(r.Context(), id, name, description); err != nil {
+		setFlash(w, "error", err.Error())
+		http.Redirect(w, r, fmt.Sprintf("/teams/%s/edit", id), http.StatusSeeOther)
+		return
+	}
+	setFlash(w, "success", "Equipo actualizado")
 	http.Redirect(w, r, "/teams", http.StatusSeeOther)
 }
 

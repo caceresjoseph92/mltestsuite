@@ -29,6 +29,8 @@ type User struct {
 	Role               Role
 	Active             bool
 	NotificationEmails string
+	TeamID             *uuid.UUID
+	TeamName           string // populated by JOIN, not stored
 	CreatedAt          time.Time
 }
 

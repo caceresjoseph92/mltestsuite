@@ -10,38 +10,47 @@
     </a>
 </div>
 
-<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-    <table style="width:100%; border-collapse:collapse;">
-        <thead>
-            <tr style="background:#F9FAFB;">
-                <th style="text-align:left; padding:10px 24px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Nombre</th>
-                <th style="text-align:left; padding:10px 16px; font-size:12px; font-weight:700; color:#6B7280; text-transform:uppercase; letter-spacing:0.05em; border-bottom:1px solid #E5E7EB;">Descripcion</th>
-            </tr>
-        </thead>
-        <tbody>
-        {{range .Teams}}
-        <tr style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
-            onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
-            <td style="padding:14px 24px;">
-                <div style="display:flex; align-items:center; gap:10px;">
-                    <div style="width:32px; height:32px; border-radius:8px; background:#009EE3; display:flex; align-items:center; justify-content:center;">
-                        <svg width="16" height="16" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-                    </div>
-                    <span style="font-size:14px; font-weight:700; color:#1C1C1E;">{{.Name}}</span>
-                </div>
-            </td>
-            <td style="padding:14px 16px; font-size:13px; color:#6B7280;">{{.Description}}</td>
-        </tr>
-        {{else}}
-        <tr>
-            <td colspan="2" style="padding:48px; text-align:center;">
-                <p style="font-size:16px; font-weight:600; color:#374151; margin:0 0 8px;">No hay equipos aun</p>
-                <p style="font-size:13px; color:#9CA3AF; margin:0 0 20px;">Crea un equipo para organizar los reportes</p>
-                <a href="/teams/new" style="background:#009EE3; color:white; padding:10px 24px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none;">Crear primer equipo</a>
-            </td>
-        </tr>
+<div style="display:grid; gap:16px;">
+{{range .Teams}}
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:20px 24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+    <div style="display:flex; justify-content:space-between; align-items:flex-start; gap:16px;">
+        <div style="display:flex; align-items:center; gap:12px; flex:1; min-width:0;">
+            <div style="width:40px; height:40px; border-radius:10px; background:#009EE3; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <svg width="20" height="20" fill="none" stroke="white" stroke-width="2" viewBox="0 0 24 24"><path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            </div>
+            <div style="min-width:0;">
+                <p style="font-size:16px; font-weight:800; color:#1C1C1E; margin:0;">{{.Name}}</p>
+                {{if .Description}}<p style="font-size:13px; color:#6B7280; margin:2px 0 0;">{{.Description}}</p>{{end}}
+            </div>
+        </div>
+        <a href="/teams/{{.ID}}/edit"
+            style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none; white-space:nowrap; display:inline-flex; align-items:center; gap:4px; flex-shrink:0;">
+            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+            Editar
+        </a>
+    </div>
+
+    {{if .Members}}
+    <div style="margin-top:16px; padding-top:16px; border-top:1px solid #F3F4F6; display:flex; flex-wrap:wrap; gap:8px;">
+        {{range .Members}}
+        <span style="display:inline-flex; align-items:center; gap:6px; background:#F3F4F6; border-radius:100px; padding:4px 12px 4px 4px; font-size:13px; font-weight:500; color:#374151;">
+            <span style="width:24px; height:24px; border-radius:50%; background:#1C1C1E; display:flex; align-items:center; justify-content:center; flex-shrink:0;">
+                <span style="color:#FFE600; font-weight:700; font-size:10px;">{{slice . 0 1}}</span>
+            </span>
+            {{.}}
+        </span>
         {{end}}
-        </tbody>
-    </table>
+    </div>
+    {{else}}
+    <p style="margin-top:12px; font-size:12px; color:#9CA3AF;">Sin miembros asignados</p>
+    {{end}}
+</div>
+{{else}}
+<div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:48px; text-align:center;">
+    <p style="font-size:16px; font-weight:600; color:#374151; margin:0 0 8px;">No hay equipos aun</p>
+    <p style="font-size:13px; color:#9CA3AF; margin:0 0 20px;">Crea un equipo para organizar los reportes</p>
+    <a href="/teams/new" style="background:#009EE3; color:white; padding:10px 24px; border-radius:8px; font-weight:700; font-size:14px; text-decoration:none;">Crear primer equipo</a>
+</div>
+{{end}}
 </div>
 {{end}}

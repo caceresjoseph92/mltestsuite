@@ -38,10 +38,24 @@ func (s *Service) ListTeams(ctx context.Context) ([]*domain.Team, error) {
 	return s.teamRepo.FindAll(ctx)
 }
 
+func (s *Service) GetTeam(ctx context.Context, id uuid.UUID) (*domain.Team, error) {
+	return s.teamRepo.FindByID(ctx, id)
+}
+
 func (s *Service) CreateTeam(ctx context.Context, name, description string) error {
 	return s.teamRepo.Save(ctx, &domain.Team{
 		ID: uuid.New(), Name: name, Description: description, Active: true, CreatedAt: time.Now(),
 	})
+}
+
+func (s *Service) UpdateTeam(ctx context.Context, id uuid.UUID, name, description string) error {
+	t, err := s.teamRepo.FindByID(ctx, id)
+	if err != nil {
+		return err
+	}
+	t.Name = name
+	t.Description = description
+	return s.teamRepo.Update(ctx, t)
 }
 
 // -- Reports -----------------------------------------------------------------

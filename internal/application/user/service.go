@@ -3,6 +3,7 @@ package user
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"mltestsuite/internal/domain/user"
 
@@ -28,6 +29,28 @@ type UpdateUserInput struct {
 	Role     user.Role
 	Active   bool
 	Password string
+	TeamID   *uuid.UUID
+}
+
+func (s *Service) CreateUser(ctx context.Context, input UpdateUserInput) error {
+	if input.Password == "" {
+		return fmt.Errorf("la contraseña es obligatoria")
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return fmt.Errorf("error hasheando contraseña: %w", err)
+	}
+	u := &user.User{
+		ID:           uuid.New(),
+		Name:         input.Name,
+		Email:        input.Email,
+		PasswordHash: string(hash),
+		Role:         input.Role,
+		Active:       true,
+		TeamID:       input.TeamID,
+		CreatedAt:    time.Now(),
+	}
+	return s.repo.Save(ctx, u)
 }
 
 func (s *Service) UpdateUser(ctx context.Context, id uuid.UUID, input UpdateUserInput) error {
@@ -39,6 +62,7 @@ func (s *Service) UpdateUser(ctx context.Context, id uuid.UUID, input UpdateUser
 	u.Email = input.Email
 	u.Role = input.Role
 	u.Active = input.Active
+	u.TeamID = input.TeamID
 	if input.Password != "" {
 		hash, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 		if err != nil {

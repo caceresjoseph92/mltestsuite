@@ -30,10 +30,21 @@
             <div style="margin-bottom:20px;">
                 <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Rol</label>
                 <select name="role"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; box-sizing:border-box; background:white;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
                     <option value="user" {{if and .User (eq (printf "%s" .User.Role) "user")}}selected{{end}}>Usuario</option>
                     <option value="admin" {{if and .User (eq (printf "%s" .User.Role) "admin")}}selected{{end}}>Admin</option>
+                </select>
+            </div>
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Equipo</label>
+                <select name="team_id"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; box-sizing:border-box; background:white;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    <option value="">— Sin equipo —</option>
+                    {{range .Teams}}
+                    <option value="{{.ID}}" {{if and $.User $.User.TeamID (eq (printf "%s" $.User.TeamID) (printf "%s" .ID))}}selected{{end}}>{{.Name}}</option>
+                    {{end}}
                 </select>
             </div>
             {{if not .IsNew}}

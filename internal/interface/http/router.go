@@ -66,6 +66,8 @@ func NewRouter(
 	mux.Handle("GET /teams", requireAuth(http.HandlerFunc(testingHandler.ListTeams)))
 	mux.Handle("GET /teams/new", requireAuth(http.HandlerFunc(testingHandler.ShowCreateTeam)))
 	mux.Handle("POST /teams", requireAuth(http.HandlerFunc(testingHandler.CreateTeam)))
+	mux.Handle("GET /teams/{id}/edit", requireAuth(http.HandlerFunc(testingHandler.ShowEditTeam)))
+	mux.Handle("PUT /teams/{id}", requireAuth(http.HandlerFunc(testingHandler.UpdateTeam)))
 
 	// -- Admin Users -------------------------------------------------------------
 	mux.Handle("GET /admin/users", requireAdmin(http.HandlerFunc(userHandler.List)))

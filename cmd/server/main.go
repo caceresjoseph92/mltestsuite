@@ -58,8 +58,8 @@ func main() {
 
 	// -- Handlers HTTP -------------------------------------------------------------
 	authHandler := httphandler.NewAuthHandler(authService, renderer)
-	testingHandler := httphandler.NewTestingHandler(testingService, uploader, renderer)
-	userHandler := httphandler.NewUserHandler(userService, renderer)
+	testingHandler := httphandler.NewTestingHandler(testingService, userService, uploader, renderer)
+	userHandler := httphandler.NewUserHandler(userService, testingService, renderer)
 
 	// -- Router -------------------------------------------------------------------
 	router := httphandler.NewRouter(authHandler, testingHandler, userHandler)

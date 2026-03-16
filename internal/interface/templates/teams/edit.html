@@ -1,0 +1,32 @@
+{{define "content"}}
+<div style="margin-bottom:24px;">
+    <a href="/teams" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a Equipos</a>
+</div>
+
+<div style="max-width:560px;">
+    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Editar Equipo</h1>
+
+    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+        <form method="POST" action="/teams/{{.Team.ID}}">
+            <input type="hidden" name="_method" value="PUT">
+            <div style="margin-bottom:20px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Nombre</label>
+                <input type="text" name="name" value="{{.Team.Name}}" required
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+            </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Descripción</label>
+                <textarea name="description" rows="3"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; resize:vertical; box-sizing:border-box;"
+                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.Team.Description}}</textarea>
+            </div>
+            <button type="submit"
+                style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer;"
+                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                Guardar
+            </button>
+        </form>
+    </div>
+</div>
+{{end}}
