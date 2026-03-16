@@ -33,7 +33,7 @@ func NewRouter(
 
 	// -- TestCases ---------------------------------------------------------------
 	mux.Handle("GET /testcases", requireAuth(http.HandlerFunc(testingHandler.ListTestCases)))
-	mux.Handle("GET /testcases/report/{reportID}", requireAuth(http.HandlerFunc(testingHandler.ListTestCasesByReport)))
+	mux.Handle("GET /reports/{reportID}/testcases", requireAuth(http.HandlerFunc(testingHandler.ListTestCasesByReport)))
 	mux.Handle("GET /testcases/new", requireAuth(http.HandlerFunc(testingHandler.ShowCreateTestCase)))
 	mux.Handle("POST /testcases", requireAuth(http.HandlerFunc(testingHandler.CreateTestCase)))
 	mux.Handle("GET /testcases/import", requireAuth(http.HandlerFunc(testingHandler.ShowImport)))
