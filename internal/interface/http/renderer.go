@@ -69,6 +69,7 @@ func NewRenderer() (*Renderer, error) {
 		"reports/edit.html",
 		"teams/list.html",
 		"teams/new.html",
+		"teams/edit.html",
 		"knowledge/show.html",
 		"admin/users_list.html",
 		"admin/user_form.html",
