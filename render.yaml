@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: mltestsuite
+    runtime: go
+    buildCommand: go build -o server ./cmd/server
+    startCommand: ./server
+    envVars:
+      - key: ENV
+        value: production
