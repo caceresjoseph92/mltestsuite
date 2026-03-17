@@ -395,11 +395,21 @@ func (s *Service) ExportClaudePrompt(ctx context.Context, reportID uuid.UUID) (s
 
 	existingCases, _ := s.testCaseRepo.FindByReportID(ctx, reportID)
 	knowledge, _ := s.knowledgeRepo.FindMain(ctx)
+	allDocs, _ := s.knowledgeRepo.FindAll(ctx)
 
-	var knowledgeContent string
-	if knowledge != nil {
-		knowledgeContent = knowledge.Content
+	var knowledgeParts []string
+	if knowledge != nil && knowledge.Content != "" {
+		knowledgeParts = append(knowledgeParts, knowledge.Content)
 	}
+	for _, doc := range allDocs {
+		if knowledge != nil && doc.ID == knowledge.ID {
+			continue // ya incluido arriba
+		}
+		if doc.ReportType == "" || doc.ReportType == report.ReportType {
+			knowledgeParts = append(knowledgeParts, fmt.Sprintf("### %s\n%s", doc.Title, doc.Content))
+		}
+	}
+	knowledgeContent := strings.Join(knowledgeParts, "\n\n---\n\n")
 
 	var existingTitles []string
 	for _, tc := range existingCases {
