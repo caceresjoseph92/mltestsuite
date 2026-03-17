@@ -148,11 +148,17 @@
                     style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
             </div>
+            {{$currentRT := ""}}{{if .Document}}{{$currentRT = .Document.ReportType}}{{end}}
             <div style="margin-bottom:20px;">
                 <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Tipo de Reporte</label>
-                <input type="text" name="report_type" value="{{if .Document}}{{.Document.ReportType}}{{end}}"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                <select name="report_type"
+                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                    <option value="">— Sin asociar —</option>
+                    {{range .Reports}}
+                    <option value="{{.ReportType}}" {{if eq .ReportType $currentRT}}selected{{end}}>{{.TeamName}} / {{.Name}} — {{.ReportType}}</option>
+                    {{end}}
+                </select>
             </div>
             <div style="margin-bottom:20px;">
                 <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Contenido (Markdown)</label>
