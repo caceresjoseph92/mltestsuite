@@ -665,7 +665,16 @@ func (h *TestingHandler) CompareJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	ef, err := h.service.CompareJSON(r.Context(), id, fieldName, actualJSON)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		h.renderer.ExecuteTemplate(w, "partials/execution_row.html", map[string]any{
+			"Field": &domain.ExecutionField{
+				ExecutionID:  id,
+				FieldName:    fieldName,
+				ExpectedJSON: "",
+				ActualJSON:   actualJSON,
+				Matches:      nil,
+				ErrorMsg:     err.Error(),
+			},
+		})
 		return
 	}
 	// Return the result as a partial HTML row

@@ -181,6 +181,7 @@ type ExecutionField struct {
 	ExpectedJSON string // from test case field
 	ActualJSON   string
 	Matches      *bool
+	ErrorMsg     string
 	CreatedAt    time.Time
 }
 

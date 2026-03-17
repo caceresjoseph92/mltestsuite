@@ -3,7 +3,9 @@
     <!-- Header con resultado -->
     <div style="display:flex; align-items:center; gap:10px; padding:12px 20px; background:#F9FAFB; border-bottom:1px solid #E5E7EB;">
         <code style="font-size:13px; font-weight:700; color:#1C1C1E; background:white; border:1px solid #E5E7EB; padding:3px 8px; border-radius:6px;">{{.Field.FieldName}}</code>
-        {{if .Field.Matches}}
+        {{if .Field.ErrorMsg}}
+            <span style="background:#FEF3C7; color:#92400E; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:800;">⚠ {{.Field.ErrorMsg}}</span>
+        {{else if .Field.Matches}}
             {{if derefBool .Field.Matches}}
             <span style="background:#D1FAE5; color:#065F46; padding:3px 12px; border-radius:20px; font-size:12px; font-weight:800;">✓ EXITOSO</span>
             {{else}}
