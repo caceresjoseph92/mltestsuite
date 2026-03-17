@@ -205,7 +205,7 @@ func (s *Service) GetRelease(ctx context.Context, id uuid.UUID) (*domain.Release
 	return rel, nil
 }
 
-func (s *Service) CreateRelease(ctx context.Context, version, description, prLink string, createdByID uuid.UUID) (*domain.Release, error) {
+func (s *Service) CreateRelease(ctx context.Context, version, description, prLink string, createdByID uuid.UUID, reportIDs []uuid.UUID) (*domain.Release, error) {
 	rel := &domain.Release{
 		ID: uuid.New(), Version: version, Description: description, PRLink: prLink,
 		CreatedByID: createdByID, Status: domain.ReleaseInProgress, CreatedAt: time.Now(),
@@ -214,12 +214,24 @@ func (s *Service) CreateRelease(ctx context.Context, version, description, prLin
 		return nil, err
 	}
 
-	// Auto-create executions for ALL active test cases
+	// Auto-create executions for active test cases, optionally filtered by report
 	tcs, err := s.testCaseRepo.FindAll(ctx)
 	if err != nil {
 		return rel, nil
 	}
 	for _, tc := range tcs {
+		if len(reportIDs) > 0 {
+			included := false
+			for _, rid := range reportIDs {
+				if tc.ReportID == rid {
+					included = true
+					break
+				}
+			}
+			if !included {
+				continue
+			}
+		}
 		_ = s.execRepo.Save(ctx, &domain.Execution{
 			ID: uuid.New(), ReleaseID: rel.ID, TestCaseID: tc.ID,
 			Status: domain.StatusPending, CreatedAt: time.Now(),

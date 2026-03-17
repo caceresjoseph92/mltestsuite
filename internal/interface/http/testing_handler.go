@@ -219,6 +219,12 @@ func (h *TestingHandler) UpdateReport(w http.ResponseWriter, r *http.Request) {
 
 // -- TestCases ---------------------------------------------------------------
 
+type reportExecutionGroup struct {
+	ReportType string
+	TeamName   string
+	Executions []*domain.Execution
+}
+
 type reportSummaryVM struct {
 	ReportID   uuid.UUID
 	ReportName string
@@ -554,10 +560,20 @@ func (h *TestingHandler) ListReleases(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *TestingHandler) ShowCreateRelease(w http.ResponseWriter, r *http.Request) {
-	h.renderer.ExecuteTemplate(w, "releases/new.html", withFlash(w, r, map[string]any{}))
+	reports, _ := h.service.ListReports(r.Context())
+	sort.Slice(reports, func(i, j int) bool {
+		return reports[i].ReportType < reports[j].ReportType
+	})
+	h.renderer.ExecuteTemplate(w, "releases/new.html", withFlash(w, r, map[string]any{
+		"Reports": reports,
+	}))
 }
 
 func (h *TestingHandler) CreateRelease(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Error al procesar formulario", http.StatusBadRequest)
+		return
+	}
 	userID, _ := uuid.Parse(GetUserID(r.Context()))
 	version := r.FormValue("version")
 	description := r.FormValue("description")
@@ -567,7 +583,14 @@ func (h *TestingHandler) CreateRelease(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/releases/new", http.StatusSeeOther)
 		return
 	}
-	rel, err := h.service.CreateRelease(r.Context(), version, description, prLink, userID)
+	reportIDStrs := r.Form["report_ids"]
+	var reportIDs []uuid.UUID
+	for _, s := range reportIDStrs {
+		if id, err := uuid.Parse(s); err == nil {
+			reportIDs = append(reportIDs, id)
+		}
+	}
+	rel, err := h.service.CreateRelease(r.Context(), version, description, prLink, userID, reportIDs)
 	if err != nil {
 		setFlash(w, "error", err.Error())
 		http.Redirect(w, r, "/releases/new", http.StatusSeeOther)
@@ -588,11 +611,30 @@ func (h *TestingHandler) ShowRelease(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	executions, _ := h.service.GetReleaseExecutions(r.Context(), id)
+
+	// Group executions by ReportType
+	var groupOrder []string
+	groupMap := map[string]*reportExecutionGroup{}
+	for _, ex := range executions {
+		if _, ok := groupMap[ex.ReportType]; !ok {
+			groupOrder = append(groupOrder, ex.ReportType)
+			groupMap[ex.ReportType] = &reportExecutionGroup{
+				ReportType: ex.ReportType,
+				TeamName:   ex.TeamName,
+			}
+		}
+		groupMap[ex.ReportType].Executions = append(groupMap[ex.ReportType].Executions, ex)
+	}
+	groups := make([]reportExecutionGroup, 0, len(groupOrder))
+	for _, rt := range groupOrder {
+		groups = append(groups, *groupMap[rt])
+	}
+
 	statuses := domain.AllStatuses()
 	h.renderer.ExecuteTemplate(w, "releases/show.html", withFlash(w, r, map[string]any{
-		"Release":    rel,
-		"Executions": executions,
-		"Statuses":   statuses,
+		"Release":         rel,
+		"ExecutionGroups": groups,
+		"Statuses":        statuses,
 	}))
 }
 

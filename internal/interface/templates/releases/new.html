@@ -26,6 +26,24 @@
                     style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
             </div>
+            <div style="margin-bottom:24px;">
+                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">
+                    Reportes a probar
+                    <span style="font-weight:400; color:#9CA3AF;">(opcional — si no seleccionas ninguno se incluyen todos)</span>
+                </label>
+                <div style="border:1.5px solid #E5E7EB; border-radius:8px; overflow:hidden; max-height:240px; overflow-y:auto;">
+                    {{range .Reports}}
+                    <label style="display:flex; align-items:center; gap:10px; padding:10px 14px; border-bottom:1px solid #F3F4F6; cursor:pointer; transition:background 0.15s;"
+                           onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='white'">
+                        <input type="checkbox" name="report_ids" value="{{.ID}}" style="accent-color:#009EE3; width:15px; height:15px;">
+                        <div>
+                            <div style="font-size:13px; font-weight:700; color:#1C1C1E; font-family:monospace;">{{.ReportType}}</div>
+                            <div style="font-size:11px; color:#009EE3;">{{.TeamName}}</div>
+                        </div>
+                    </label>
+                    {{end}}
+                </div>
+            </div>
             <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
                 onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
                 Crear Release
