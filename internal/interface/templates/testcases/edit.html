@@ -3,66 +3,140 @@
     <a href="/testcases/{{.TestCase.ID}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver al caso</a>
 </div>
 
-<div style="max-width:640px;">
-    <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Editar Caso de Prueba</h1>
+<h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Editar Caso de Prueba</h1>
 
-    <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <form method="POST" action="/testcases/{{.TestCase.ID}}">
-            <input type="hidden" name="_method" value="PUT">
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Reporte</label>
-                <select name="report_id" required
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-                    {{range .Reports}}<option value="{{.ID}}" {{if eq (printf "%s" .ID) (printf "%s" $.TestCase.ReportID)}}selected{{end}}>{{.TeamName}} / {{.Name}}</option>{{end}}
-                </select>
-            </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Titulo</label>
-                <input type="text" name="title" value="{{.TestCase.Title}}" required
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-            </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:10px;">Prioridad</label>
-                <div style="display:flex; gap:16px;">
-                    {{range .Priorities}}
-                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px; color:#374151;">
-                        <input type="radio" name="priority" value="{{.}}" {{if eq (printf "%s" .) (printf "%s" $.TestCase.Priority)}}checked{{end}} style="accent-color:#009EE3;">
-                        {{if eq (printf "%s" .) "high"}}
-                        <span style="background:#FEE2E2; color:#991B1B; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">high</span>
-                        {{else if eq (printf "%s" .) "medium"}}
-                        <span style="background:#FEF3C7; color:#92400E; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">medium</span>
-                        {{else}}
-                        <span style="background:#D1FAE5; color:#065F46; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">low</span>
-                        {{end}}
-                    </label>
-                    {{end}}
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+
+    <!-- Columna izquierda: detalles -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- Datos del caso -->
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:28px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 20px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Detalles</h2>
+            <form method="POST" action="/testcases/{{.TestCase.ID}}">
+                <input type="hidden" name="_method" value="PUT">
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Reporte</label>
+                    <select name="report_id" required
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                        {{range .Reports}}<option value="{{.ID}}" {{if eq (printf "%s" .ID) (printf "%s" $.TestCase.ReportID)}}selected{{end}}>{{.TeamName}} / {{.Name}}</option>{{end}}
+                    </select>
                 </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Titulo</label>
+                    <input type="text" name="title" value="{{.TestCase.Title}}" required
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:10px;">Prioridad</label>
+                    <div style="display:flex; gap:16px;">
+                        {{range .Priorities}}
+                        <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:14px; color:#374151;">
+                            <input type="radio" name="priority" value="{{.}}" {{if eq (printf "%s" .) (printf "%s" $.TestCase.Priority)}}checked{{end}} style="accent-color:#009EE3;">
+                            {{if eq (printf "%s" .) "high"}}
+                            <span style="background:#FEE2E2; color:#991B1B; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">high</span>
+                            {{else if eq (printf "%s" .) "medium"}}
+                            <span style="background:#FEF3C7; color:#92400E; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">medium</span>
+                            {{else}}
+                            <span style="background:#D1FAE5; color:#065F46; padding:2px 10px; border-radius:20px; font-size:12px; font-weight:600;">low</span>
+                            {{end}}
+                        </label>
+                        {{end}}
+                    </div>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Precondiciones</label>
+                    <textarea name="preconditions" rows="3"
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.Preconditions}}</textarea>
+                </div>
+                <div style="margin-bottom:20px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Pasos</label>
+                    <textarea name="steps" rows="4"
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.Steps}}</textarea>
+                </div>
+                <div style="margin-bottom:24px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Resultado Esperado</label>
+                    <textarea name="expected_result" rows="3"
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.ExpectedResult}}</textarea>
+                </div>
+                <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
+                    onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                    Guardar Cambios
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <!-- Columna derecha: imagen + campo JSON -->
+    <div style="display:flex; flex-direction:column; gap:20px;">
+
+        <!-- Imagen de Referencia -->
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Imagen de Referencia</h2>
+            {{if .TestCase.ReferenceImageURL}}
+            <div style="margin-bottom:16px;">
+                <img src="{{.TestCase.ReferenceImageURL}}" style="max-width:100%; border-radius:8px; border:1px solid #E5E7EB; display:block;">
+                <p style="font-size:12px; color:#9CA3AF; margin:8px 0 0;">Subí una nueva imagen para reemplazarla.</p>
             </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Precondiciones</label>
-                <textarea name="preconditions" rows="3"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.Preconditions}}</textarea>
+            {{end}}
+            <form method="POST" action="/testcases/{{.TestCase.ID}}/image" enctype="multipart/form-data">
+                <input type="file" name="image" accept="image/*" required
+                    style="width:100%; font-size:13px; margin-bottom:12px; box-sizing:border-box;">
+                <button type="submit" style="background:#009EE3; color:white; border:none; padding:8px 20px; border-radius:6px; font-size:13px; font-weight:700; cursor:pointer;"
+                    onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
+                    {{if .TestCase.ReferenceImageURL}}Reemplazar imagen{{else}}Subir imagen{{end}}
+                </button>
+            </form>
+        </div>
+
+        <!-- Campo JSON (máximo 1 por caso) -->
+        <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
+            <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Campo JSON</h2>
+
+            {{if .TestCase.Fields}}
+            {{with index .TestCase.Fields 0}}
+            <!-- Campo existente: mostrar con opción de eliminar -->
+            <div style="margin-bottom:16px; padding:12px; background:#F9FAFB; border-radius:8px; border:1px solid #E5E7EB;">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <code style="font-size:13px; font-weight:700; color:#1C1C1E; background:white; border:1px solid #E5E7EB; padding:3px 8px; border-radius:6px;">{{.FieldName}}</code>
+                    <button hx-delete="/testcases/fields/{{.ID}}" hx-confirm="¿Eliminar este campo JSON?" hx-target="closest div[id]" hx-swap="outerHTML"
+                        style="background:none; border:none; color:#F23D4F; font-size:12px; font-weight:700; cursor:pointer; padding:0;">
+                        Eliminar
+                    </button>
+                </div>
+                <pre style="font-size:11px; margin:0; color:#374151; font-family:'SF Mono',Monaco,monospace; overflow-x:auto; white-space:pre-wrap; word-break:break-all;">{{.ExpectedJSON}}</pre>
             </div>
-            <div style="margin-bottom:20px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Pasos</label>
-                <textarea name="steps" rows="5"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.Steps}}</textarea>
-            </div>
-            <div style="margin-bottom:24px;">
-                <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Resultado Esperado</label>
-                <textarea name="expected_result" rows="3"
-                    style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; resize:vertical;"
-                    onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">{{.TestCase.ExpectedResult}}</textarea>
-            </div>
-            <button type="submit" style="background:#009EE3; color:white; border:none; padding:10px 24px; border-radius:8px; font-size:14px; font-weight:700; cursor:pointer; transition:background 0.2s;"
-                onmouseover="this.style.background='#0077B6'" onmouseout="this.style.background='#009EE3'">
-                Guardar Cambios
-            </button>
-        </form>
+            <p style="font-size:12px; color:#6B7280; margin:0 0 12px;">Para reemplazarlo, eliminalo primero y luego agregá el nuevo.</p>
+            {{end}}
+            {{else}}
+            <!-- Sin campo: mostrar formulario para agregar -->
+            <form method="POST" action="/testcases/{{.TestCase.ID}}/fields">
+                <div style="margin-bottom:12px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">Nombre del campo</label>
+                    <input type="text" name="field_name" placeholder="request_parameters_json" required
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; box-sizing:border-box; font-family:monospace;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+                </div>
+                <div style="margin-bottom:16px;">
+                    <label style="display:block; font-size:13px; font-weight:600; color:#374151; margin-bottom:6px;">JSON esperado</label>
+                    <textarea name="expected_json" placeholder='{"key": "value"}' rows="6" required
+                        style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:12px; outline:none; box-sizing:border-box; resize:vertical; font-family:'SF Mono',Monaco,monospace;"
+                        onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'"></textarea>
+                </div>
+                <button type="submit" style="background:#00A650; color:white; border:none; padding:9px 20px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;"
+                    onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#00A650'">
+                    Guardar Campo JSON
+                </button>
+            </form>
+            {{end}}
+        </div>
+
     </div>
 </div>
 {{end}}
