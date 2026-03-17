@@ -1,6 +1,10 @@
 {{define "content"}}
 <div style="margin-bottom:24px;">
+    {{if .FromExecution}}
+    <a href="/executions/{{.FromExecution}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver a la ejecución</a>
+    {{else}}
     <a href="/testcases/{{.TestCase.ID}}" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">&larr; Volver al caso</a>
+    {{end}}
 </div>
 
 <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0 0 24px;">Editar Caso de Prueba</h1>

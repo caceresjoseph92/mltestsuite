@@ -370,9 +370,10 @@ func (h *TestingHandler) ShowEditTestCase(w http.ResponseWriter, r *http.Request
 	}
 	reports, _ := h.service.ListReports(r.Context())
 	h.renderer.ExecuteTemplate(w, "testcases/edit.html", withFlash(w, r, map[string]any{
-		"TestCase":   tc,
-		"Reports":    reports,
-		"Priorities": []domain.Priority{domain.PriorityHigh, domain.PriorityMedium, domain.PriorityLow},
+		"TestCase":      tc,
+		"Reports":       reports,
+		"Priorities":    []domain.Priority{domain.PriorityHigh, domain.PriorityMedium, domain.PriorityLow},
+		"FromExecution": r.URL.Query().Get("from_execution"),
 	}))
 }
 
@@ -403,6 +404,10 @@ func (h *TestingHandler) UpdateTestCase(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 	setFlash(w, "success", "Caso de prueba actualizado")
+	if execID := r.FormValue("from_execution"); execID != "" {
+		http.Redirect(w, r, fmt.Sprintf("/executions/%s", execID), http.StatusSeeOther)
+		return
+	}
 	http.Redirect(w, r, fmt.Sprintf("/testcases/%s", id), http.StatusSeeOther)
 }
 
