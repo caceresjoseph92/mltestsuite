@@ -11,7 +11,8 @@
                 <div style="width:72px; height:72px; background:#FFE600; border-radius:20px; display:flex; align-items:center; justify-content:center; margin:0 auto 20px;">
                     <svg width="36" height="36" fill="none" stroke="#1C1C1E" stroke-width="2" viewBox="0 0 24 24"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
                 </div>
-                <h2 style="font-size:20px; font-weight:800; color:#1C1C1E; margin:0 0 12px;">Base de Conocimiento</h2>
+                <h2 style="font-size:20px; font-weight:800; color:#1C1C1E; margin:0 0 8px;">Sócrates</h2>
+                <p style="font-size:13px; font-style:italic; color:#9CA3AF; margin:0 0 12px;">"Solo sé que no sé nada"</p>
                 <p style="font-size:14px; color:#6B7280; margin:0; line-height:1.7;">El cerebro de tu equipo. Toda la documentación técnica y de negocio que necesita <strong style="color:#1C1C1E;">Claude</strong> para generar casos de prueba precisos y relevantes.</p>
                 <div style="margin-top:24px; display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
                     <span style="background:#F3F4F6; color:#374151; padding:6px 14px; border-radius:20px; font-size:12px; font-weight:600;">📚 Documentás</span>
@@ -125,8 +126,8 @@
 
 <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:24px;">
     <div>
-        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Base de Conocimiento</h1>
-        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;">Documentacion de reglas de negocio y contexto Desarrollo</p>
+        <h1 style="font-size:22px; font-weight:800; color:#1C1C1E; margin:0;">Sócrates</h1>
+        <p style="font-size:13px; color:#6B7280; margin:4px 0 0;"><em>"Solo sé que no sé nada"</em> — Documentación de reglas de negocio y contexto de desarrollo</p>
     </div>
     <button onclick="openTutorial()"
         style="display:inline-flex; align-items:center; gap:7px; background:#FFE600; border:none; color:#1C1C1E; padding:9px 18px; border-radius:8px; font-size:13px; font-weight:700; cursor:pointer;"
@@ -139,7 +140,7 @@
 <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px;">
     <!-- Editor -->
     <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
-        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Editar Documento</h2>
+        <h2 style="font-size:15px; font-weight:700; color:#374151; margin:0 0 16px; padding-bottom:12px; border-bottom:1px solid #F3F4F6;">Nuevo Documento</h2>
         <form method="POST" action="/knowledge">
             {{if .Document}}<input type="hidden" name="id" value="{{.Document.ID}}">{{end}}
             <div style="margin-bottom:20px;">
