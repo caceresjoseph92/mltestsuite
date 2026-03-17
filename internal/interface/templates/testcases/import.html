@@ -154,7 +154,7 @@ expected_result: Retorna balance correcto
                     style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
                     <option value="">Seleccionar...</option>
-                    {{range .Reports}}<option value="{{.ID}}">{{.TeamName}} / {{.Name}}</option>{{end}}
+                    {{range .Reports}}<option value="{{.ID}}">{{.ReportType}}</option>{{end}}
                 </select>
             </div>
             <div style="margin-bottom:20px;">

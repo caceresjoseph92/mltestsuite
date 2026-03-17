@@ -502,6 +502,9 @@ func (h *TestingHandler) DeleteField(w http.ResponseWriter, r *http.Request) {
 
 func (h *TestingHandler) ShowImport(w http.ResponseWriter, r *http.Request) {
 	reports, _ := h.service.ListReports(r.Context())
+	sort.Slice(reports, func(i, j int) bool {
+		return reports[i].ReportType < reports[j].ReportType
+	})
 	h.renderer.ExecuteTemplate(w, "testcases/import.html", withFlash(w, r, map[string]any{
 		"Reports": reports,
 	}))
