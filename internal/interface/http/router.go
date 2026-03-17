@@ -30,6 +30,7 @@ func NewRouter(
 	mux.Handle("POST /releases", requireAuth(http.HandlerFunc(testingHandler.CreateRelease)))
 	mux.Handle("GET /releases/{id}", requireAuth(http.HandlerFunc(testingHandler.ShowRelease)))
 	mux.Handle("GET /releases/{id}/export", requireAuth(http.HandlerFunc(testingHandler.ExportExcel)))
+	mux.Handle("POST /releases/{id}/sync", requireAuth(http.HandlerFunc(testingHandler.SyncRelease)))
 
 	// -- TestCases ---------------------------------------------------------------
 	mux.Handle("GET /testcases", requireAuth(http.HandlerFunc(testingHandler.ListTestCases)))

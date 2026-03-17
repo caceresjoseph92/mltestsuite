@@ -246,6 +246,51 @@ func (s *Service) GetReleaseExecutions(ctx context.Context, releaseID uuid.UUID)
 	return s.execRepo.FindByReleaseID(ctx, releaseID)
 }
 
+func (s *Service) SyncReleaseTestCases(ctx context.Context, releaseID uuid.UUID) (int, error) {
+	executions, err := s.execRepo.FindByReleaseID(ctx, releaseID)
+	if err != nil {
+		return 0, err
+	}
+	// Collect existing test case IDs and report types already in the release
+	existingTCIDs := map[uuid.UUID]struct{}{}
+	reportTypes := map[string]struct{}{}
+	for _, ex := range executions {
+		existingTCIDs[ex.TestCaseID] = struct{}{}
+		if ex.ReportType != "" {
+			reportTypes[ex.ReportType] = struct{}{}
+		}
+	}
+	if len(reportTypes) == 0 {
+		return 0, nil
+	}
+	// Resolve report types → report UUIDs
+	allReports, err := s.reportRepo.FindAll(ctx)
+	if err != nil {
+		return 0, err
+	}
+	added := 0
+	for _, rep := range allReports {
+		if _, ok := reportTypes[rep.ReportType]; !ok {
+			continue
+		}
+		tcs, err := s.testCaseRepo.FindByReportID(ctx, rep.ID)
+		if err != nil {
+			continue
+		}
+		for _, tc := range tcs {
+			if _, exists := existingTCIDs[tc.ID]; exists {
+				continue
+			}
+			_ = s.execRepo.Save(ctx, &domain.Execution{
+				ID: uuid.New(), ReleaseID: releaseID, TestCaseID: tc.ID,
+				Status: domain.StatusPending, CreatedAt: time.Now(),
+			})
+			added++
+		}
+	}
+	return added, nil
+}
+
 func (s *Service) GetExecution(ctx context.Context, id uuid.UUID) (*domain.Execution, error) {
 	exec, err := s.execRepo.FindByID(ctx, id)
 	if err != nil {

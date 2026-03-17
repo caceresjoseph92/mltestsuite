@@ -641,6 +641,22 @@ func (h *TestingHandler) ShowRelease(w http.ResponseWriter, r *http.Request) {
 	}))
 }
 
+func (h *TestingHandler) SyncRelease(w http.ResponseWriter, r *http.Request) {
+	id, ok := parseUUID(w, r, "id")
+	if !ok {
+		return
+	}
+	added, err := h.service.SyncReleaseTestCases(r.Context(), id)
+	if err != nil {
+		setFlash(w, "error", err.Error())
+	} else if added == 0 {
+		setFlash(w, "success", "No hay casos nuevos para agregar")
+	} else {
+		setFlash(w, "success", fmt.Sprintf("Se agregaron %d casos nuevos al release", added))
+	}
+	http.Redirect(w, r, fmt.Sprintf("/releases/%s", id), http.StatusSeeOther)
+}
+
 // -- Executions --------------------------------------------------------------
 
 func (h *TestingHandler) ShowExecution(w http.ResponseWriter, r *http.Request) {

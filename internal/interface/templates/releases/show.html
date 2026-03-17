@@ -16,10 +16,20 @@
             {{if .Release.Description}}<p style="color:#6B7280; font-size:14px; margin:0 0 8px;">{{.Release.Description}}</p>{{end}}
             {{if .Release.PRLink}}<a href="{{.Release.PRLink}}" target="_blank" style="color:#009EE3; font-size:13px; font-weight:600; text-decoration:none;">Ver PR</a>{{end}}
         </div>
-        <a href="/releases/{{.Release.ID}}/export" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
-            <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-            Exportar Excel
-        </a>
+        <div style="display:flex; gap:8px;">
+            <form method="POST" action="/releases/{{.Release.ID}}/sync">
+                <button type="submit"
+                    style="background:white; color:#374151; border:1.5px solid #E5E7EB; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:6px;"
+                    onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='white'">
+                    <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Sincronizar casos nuevos
+                </button>
+            </form>
+            <a href="/releases/{{.Release.ID}}/export" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                Exportar Excel
+            </a>
+        </div>
     </div>
 
     <!-- Stats bar -->
