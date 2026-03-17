@@ -157,7 +157,7 @@
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
                     <option value="">— Sin asociar —</option>
                     {{range .Reports}}
-                    <option value="{{.ReportType}}" {{if eq .ReportType $currentRT}}selected{{end}}>{{.TeamName}} / {{.Name}} — {{.ReportType}}</option>
+                    <option value="{{.ReportType}}" {{if eq .ReportType $currentRT}}selected{{end}}>{{.ReportType}}</option>
                     {{end}}
                 </select>
             </div>

@@ -5,6 +5,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"sort"
 	"strings"
 	"time"
 
@@ -697,6 +698,9 @@ func (h *TestingHandler) ShowKnowledge(w http.ResponseWriter, r *http.Request) {
 	doc, _ := h.service.GetBusinessKnowledge(r.Context())
 	docs, _ := h.service.ListKnowledgeDocs(r.Context())
 	reports, _ := h.service.ListReports(r.Context())
+	sort.Slice(reports, func(i, j int) bool {
+		return reports[i].ReportType < reports[j].ReportType
+	})
 	h.renderer.ExecuteTemplate(w, "knowledge/show.html", withFlash(w, r, map[string]any{
 		"Document":  doc,
 		"Documents": docs,
