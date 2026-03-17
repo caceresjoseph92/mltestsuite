@@ -155,7 +155,7 @@
                 <select name="report_type"
                     style="width:100%; border:1.5px solid #E5E7EB; border-radius:8px; padding:10px 14px; font-size:14px; outline:none; transition:border 0.2s; box-sizing:border-box; background:white;"
                     onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
-                    <option value="">— Sin asociar —</option>
+                    <option value="">General / Todos los reportes</option>
                     {{range .Reports}}
                     <option value="{{.ReportType}}" {{if eq .ReportType $currentRT}}selected{{end}}>{{.ReportType}}</option>
                     {{end}}
