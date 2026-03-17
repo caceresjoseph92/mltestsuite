@@ -41,6 +41,12 @@ var funcMap = template.FuncMap{
 		}
 		return *b
 	},
+	"not": func(v any) bool {
+		if v == nil {
+			return true
+		}
+		return false
+	},
 }
 
 // Renderer compila un set de templates por pagina.
