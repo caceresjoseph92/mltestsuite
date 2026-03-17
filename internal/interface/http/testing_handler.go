@@ -665,13 +665,21 @@ func (h *TestingHandler) CompareJSON(w http.ResponseWriter, r *http.Request) {
 	}
 	ef, err := h.service.CompareJSON(r.Context(), id, fieldName, actualJSON)
 	if err != nil {
+		expectedJSON := ""
+		if exec, execErr := h.service.GetExecution(r.Context(), id); execErr == nil {
+			for _, f := range exec.Fields {
+				if f.FieldName == fieldName {
+					expectedJSON = f.ExpectedJSON
+					break
+				}
+			}
+		}
 		h.renderer.ExecuteTemplate(w, "partials/execution_row.html", map[string]any{
 			"Field": &domain.ExecutionField{
 				ExecutionID:  id,
 				FieldName:    fieldName,
-				ExpectedJSON: "",
+				ExpectedJSON: expectedJSON,
 				ActualJSON:   actualJSON,
-				Matches:      nil,
 				ErrorMsg:     err.Error(),
 			},
 		})
