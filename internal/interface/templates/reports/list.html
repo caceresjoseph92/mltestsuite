@@ -10,6 +10,19 @@
     </a>
 </div>
 
+<div style="margin-bottom:16px;">
+    <div style="position:relative; max-width:400px;">
+        <svg width="16" height="16" fill="none" stroke="#9CA3AF" stroke-width="2" viewBox="0 0 24 24"
+             style="position:absolute; left:12px; top:50%; transform:translateY(-50%); pointer-events:none;">
+            <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input id="report-search" type="text" placeholder="Buscar por tipo o UUID..."
+            oninput="filterReports(this.value)"
+            style="width:100%; padding:9px 14px 9px 36px; border:1.5px solid #E5E7EB; border-radius:8px; font-size:13px; outline:none; box-sizing:border-box;"
+            onfocus="this.style.borderColor='#009EE3'" onblur="this.style.borderColor='#E5E7EB'">
+    </div>
+</div>
+
 <div style="background:white; border-radius:12px; border:1px solid #E5E7EB; overflow:hidden; box-shadow:0 1px 4px rgba(0,0,0,0.05);">
     <table style="width:100%; border-collapse:collapse;">
         <thead>
@@ -22,7 +35,8 @@
         </thead>
         <tbody>
         {{range .Reports}}
-        <tr style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
+        <tr data-report-type="{{.ReportType}}" data-report-id="{{.ID}}"
+            style="border-bottom:1px solid #F3F4F6; transition:background 0.15s;"
             onmouseover="this.style.background='#FAFAFA'" onmouseout="this.style.background='white'">
             <td style="padding:14px 24px;">
                 <div style="font-size:13px; font-weight:600; color:#374151;">{{.TeamName}}</div>
@@ -59,4 +73,16 @@
         </tbody>
     </table>
 </div>
+
+<script>
+function filterReports(q) {
+    q = q.trim().toLowerCase();
+    var rows = document.querySelectorAll('tbody tr[data-report-type]');
+    rows.forEach(function(row) {
+        var type = (row.dataset.reportType || '').toLowerCase();
+        var id   = (row.dataset.reportId   || '').toLowerCase();
+        row.style.display = (!q || type.includes(q) || id.includes(q)) ? '' : 'none';
+    });
+}
+</script>
 {{end}}
