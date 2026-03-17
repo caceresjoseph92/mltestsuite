@@ -41,6 +41,14 @@
         </div>
         <div style="display:flex; gap:8px; margin-left:16px;">
             <a href="/releases/{{.ID}}" style="background:#009EE3; color:white; padding:8px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none;">Ejecutar</a>
+            <form method="POST" action="/releases/{{.ID}}/sync">
+                <button type="submit"
+                    style="background:white; color:#374151; border:1.5px solid #E5E7EB; padding:7px 14px; border-radius:8px; font-size:13px; font-weight:600; cursor:pointer; display:inline-flex; align-items:center; gap:5px;"
+                    onmouseover="this.style.background='#F9FAFB'" onmouseout="this.style.background='white'">
+                    <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Sincronizar
+                </button>
+            </form>
             <a href="/releases/{{.ID}}/export" style="background:white; color:#009EE3; border:1.5px solid #009EE3; padding:7px 16px; border-radius:8px; font-size:13px; font-weight:600; text-decoration:none;">Excel</a>
         </div>
     </div>
